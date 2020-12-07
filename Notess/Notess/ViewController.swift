@@ -18,7 +18,8 @@ import UIKit
 class ViewController: UIViewController {
     
     var notesTableView: UITableView!
-
+    var addButton: UIButton!
+    
     let note1 = Note(text: "note1")
     let note2 = Note(text: "note2")
     let note3 = Note(text: "note3")
@@ -43,14 +44,30 @@ class ViewController: UIViewController {
         notesTableView.register(NoteTableViewCell.self, forCellReuseIdentifier: "id")
         notesTableView.tableFooterView = UIView(frame: CGRect.zero)
         view.addSubview(notesTableView)
+        
+        addButton = UIButton()
+        addButton.setImage(.add, for: .normal)
+        addButton.translatesAutoresizingMaskIntoConstraints = false
+        addButton.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        view.addSubview(addButton)
+        
     }
+    
+    @IBAction func buttonTapped(_ sender: UIButton) {
+            print("Button tapped!")
+        }
     
     func setConstraints() {
         NSLayoutConstraint.activate([
             notesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             notesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            notesTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            notesTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            notesTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+        ])
+
+        NSLayoutConstraint.activate([
+            addButton.topAnchor.constraint(equalTo: notesTableView.bottomAnchor, constant: 20),
+            addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
 
@@ -70,6 +87,7 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Notes"
     }
+
 }
 
 extension ViewController: UITableViewDelegate {
