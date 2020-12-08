@@ -7,10 +7,6 @@
 
 import Foundation
 
-class Note {
+struct Note {
     var text: String
-    
-    init(text: String) {
-        self.text = text
-    }
 }

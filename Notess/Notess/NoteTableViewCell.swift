@@ -28,6 +28,7 @@ class NoteTableViewCell: UITableViewCell {
     func configure(for note: Note)  {
         shortText.text = note.text
     }
+    
     func setupConstraints() {
         NSLayoutConstraint.activate([
             shortText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
@@ -35,4 +36,5 @@ class NoteTableViewCell: UITableViewCell {
             shortText.heightAnchor.constraint(equalToConstant: 16)
         ])
     }
+    
 }
