@@ -25,7 +25,7 @@ class ViewController: UIViewController {
     let note3 = Note(text: "note3")
     
     var notes: [Note] = []
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -35,7 +35,7 @@ class ViewController: UIViewController {
         setupViews()
         setConstraints()
     }
-
+    
     func setupViews() {
         notesTableView = UITableView()
         notesTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -54,8 +54,16 @@ class ViewController: UIViewController {
     }
     
     @IBAction func buttonTapped(_ sender: UIButton) {
-            print("Button tapped!")
-        }
+        let newNote = NewNoteViewController()
+        newNote.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelNewNote))
+        let navigationVC = UINavigationController(rootViewController: newNote)
+        navigationVC.modalPresentationStyle = .fullScreen
+        present(navigationVC, animated: true)
+    }
+    
+    @IBAction func cancelNewNote(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
+    }
     
     func setConstraints() {
         NSLayoutConstraint.activate([
@@ -63,14 +71,14 @@ class ViewController: UIViewController {
             notesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             notesTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
         ])
-
+        
         NSLayoutConstraint.activate([
             addButton.topAnchor.constraint(equalTo: notesTableView.bottomAnchor, constant: 20),
             addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             addButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
-
+    
 }
 
 extension ViewController: UITableViewDataSource {
@@ -87,11 +95,11 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Notes"
     }
-
+    
 }
 
 extension ViewController: UITableViewDelegate {
- 
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
     }
