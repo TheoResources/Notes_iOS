@@ -17,26 +17,38 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    static let sectionName = "Notes"
+    static let cellHeight: CGFloat = 50
     static let reloadNotesNotification = Notification.Name("refreshNotes")
     
     var notesTableView: UITableView!
     var addButton: UIButton!
+    var sortByEditedDate: UIButton!
+    
+    var sortedByEditedDate: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         NotificationCenter.default.addObserver(self, selector: #selector(onNotification(notification:)), name: ViewController.reloadNotesNotification, object: nil)
-        
-        view.backgroundColor = .white
+    
         setupViews()
         setConstraints()
     }
     
-    @objc func onNotification(notification:Notification) {
-        notesTableView.reloadData()
-    }
-    
     func setupViews() {
+        view.backgroundColor = .white
+        
+        sortByEditedDate = UIButton()
+        sortByEditedDate.setTitle("Sort by date UP", for: .normal)
+        sortByEditedDate.setTitleColor(.brown, for: .normal)
+        sortByEditedDate.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        sortByEditedDate.layer.borderWidth = 1
+        sortByEditedDate.layer.borderColor = UIColor.brown.cgColor
+        sortByEditedDate.translatesAutoresizingMaskIntoConstraints = false
+        sortByEditedDate.addTarget(self, action: #selector(sortByEditedDate(_:)), for: .touchUpInside)
+        view.addSubview(sortByEditedDate)
+        
         notesTableView = UITableView()
         notesTableView.translatesAutoresizingMaskIntoConstraints = false
         notesTableView.dataSource = self
@@ -52,6 +64,24 @@ class ViewController: UIViewController {
         view.addSubview(addButton)
     }
     
+    @objc func onNotification(notification:Notification) {
+        notesTableView.reloadData()
+    }
+    
+    @IBAction func sortByEditedDate(_ sender: UIButton) {
+        if (sortedByEditedDate) {
+            sortByEditedDate.setTitle("Sort by date DOWN", for: .normal)
+            NotesStorage.sortByEditDate(sortedUp: sortedByEditedDate)
+            notesTableView.reloadData()
+            sortedByEditedDate = false
+        } else {
+            sortByEditedDate.setTitle("Sort by date UP", for: .normal)
+            NotesStorage.sortByEditDate(sortedUp: sortedByEditedDate)
+            notesTableView.reloadData()
+            sortedByEditedDate = true
+        }
+    }
+    
     @IBAction func buttonTapped(_ sender: UIButton) {
         let newNote = NewNoteViewController()
         let navigationVC = UINavigationController(rootViewController: newNote)
@@ -62,9 +92,16 @@ class ViewController: UIViewController {
     
     func setConstraints() {
         NSLayoutConstraint.activate([
+            sortByEditedDate.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            sortByEditedDate.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            sortByEditedDate.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
+        ])
+        
+        
+        NSLayoutConstraint.activate([
             notesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             notesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            notesTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            notesTableView.topAnchor.constraint(equalTo: sortByEditedDate.bottomAnchor, constant: 10),
         ])
         
         NSLayoutConstraint.activate([
@@ -88,15 +125,14 @@ extension ViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Notes"
+        return Self.sectionName
     }
-    
 }
 
 extension ViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50
+        return Self.cellHeight
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)

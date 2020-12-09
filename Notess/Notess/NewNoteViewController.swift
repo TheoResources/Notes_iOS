@@ -43,7 +43,7 @@ class NewNoteViewController: UIViewController {
     }
     
     @IBAction func saveNewNote(_ sender: UIBarButtonItem) {
-        NotesStorage.addNote(note: Note(text: textNote.text))
+        NotesStorage.addNote(note: Note(text: textNote.text, lastEditedTimeStamp: Date().timeIntervalSince1970))
         NotificationCenter.default.post(name: ViewController.reloadNotesNotification, object: nil)
         dismiss(animated: true, completion: nil)
     }

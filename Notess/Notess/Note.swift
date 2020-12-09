@@ -9,4 +9,5 @@ import Foundation
 
 struct Note {
     var text: String
+    var lastEditedTimeStamp: TimeInterval
 }

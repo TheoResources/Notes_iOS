@@ -26,7 +26,7 @@ class NoteTableViewCell: UITableViewCell {
     }
     
     func configure(for note: Note)  {
-        shortText.text = note.text
+        shortText.text = "\(note.text) -  \(note.lastEditedTimeStamp)"
     }
     
     func setupConstraints() {

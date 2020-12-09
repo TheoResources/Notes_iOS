@@ -34,4 +34,12 @@ class NotesStorage {
             Self.notes.remove(at: index)
         }
     }
+    
+    static func sortByEditDate(sortedUp: Bool) {
+        if (sortedUp) {
+            Self.notes = Self.notes.sorted { $0.lastEditedTimeStamp > $1.lastEditedTimeStamp }
+        } else {
+            Self.notes = Self.notes.sorted { $0.lastEditedTimeStamp < $1.lastEditedTimeStamp }
+        }
+    }
 }
