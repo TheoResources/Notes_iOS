@@ -54,15 +54,10 @@ class ViewController: UIViewController {
     
     @IBAction func buttonTapped(_ sender: UIButton) {
         let newNote = NewNoteViewController()
-        newNote.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelNewNote))
         let navigationVC = UINavigationController(rootViewController: newNote)
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)
         
-    }
-    
-    @IBAction func cancelNewNote(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil)
     }
     
     func setConstraints() {
@@ -105,17 +100,17 @@ extension ViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
-            -> UISwipeActionsConfiguration? {
-            let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
-                NotesStorage.removeNoteByIndex(index: indexPath.row)
-                self.notesTableView.reloadData()
-                completionHandler(true)
-            }
-            deleteAction.image = UIImage(systemName: "trash")
-            deleteAction.backgroundColor = .systemRed
-            let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-            return configuration
+    -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
+            NotesStorage.removeNoteByIndex(index: indexPath.row)
+            self.notesTableView.reloadData()
+            completionHandler(true)
+        }
+        deleteAction.image = UIImage(systemName: "trash")
+        deleteAction.backgroundColor = .systemRed
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return configuration
     }
-
+    
 }
 
