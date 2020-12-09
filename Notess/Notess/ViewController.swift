@@ -24,14 +24,16 @@ class ViewController: UIViewController {
     var notesTableView: UITableView!
     var addButton: UIButton!
     var sortByEditedDate: UIButton!
+    var sortByText: UIButton!
     
     var sortedByEditedDate: Bool = true
+    var sortedByText: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         NotificationCenter.default.addObserver(self, selector: #selector(onNotification(notification:)), name: ViewController.reloadNotesNotification, object: nil)
-    
+        
         setupViews()
         setConstraints()
     }
@@ -40,14 +42,25 @@ class ViewController: UIViewController {
         view.backgroundColor = .white
         
         sortByEditedDate = UIButton()
-        sortByEditedDate.setTitle("Sort by date UP", for: .normal)
-        sortByEditedDate.setTitleColor(.brown, for: .normal)
+        sortByEditedDate.setTitle("Date UP", for: .normal)
+        sortByEditedDate.setTitleColor(.black, for: .normal)
         sortByEditedDate.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         sortByEditedDate.layer.borderWidth = 1
-        sortByEditedDate.layer.borderColor = UIColor.brown.cgColor
+        sortByEditedDate.layer.borderColor = UIColor.black.cgColor
+        sortByEditedDate.layer.backgroundColor = UIColor.gray.cgColor
         sortByEditedDate.translatesAutoresizingMaskIntoConstraints = false
         sortByEditedDate.addTarget(self, action: #selector(sortByEditedDate(_:)), for: .touchUpInside)
         view.addSubview(sortByEditedDate)
+        
+        sortByText = UIButton()
+        sortByText.setTitle("Text UP", for: .normal)
+        sortByText.setTitleColor(.black, for: .normal)
+        sortByText.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        sortByText.layer.borderWidth = 1
+        sortByText.layer.borderColor = UIColor.black.cgColor
+        sortByText.translatesAutoresizingMaskIntoConstraints = false
+        sortByText.addTarget(self, action: #selector(sortByText(_:)), for: .touchUpInside)
+        view.addSubview(sortByText)
         
         notesTableView = UITableView()
         notesTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -68,14 +81,35 @@ class ViewController: UIViewController {
         notesTableView.reloadData()
     }
     
+    @IBAction func sortByText(_ sender: UIButton) {
+        sortByEditedDate.layer.backgroundColor = UIColor.white.cgColor
+        sortByText.layer.backgroundColor = UIColor.gray.cgColor
+
+        if (sortedByText) {
+            sortByText.setTitle("Text DN", for: .normal)
+            NotesStorage.sortByText(sortedUp: sortedByText)
+            notesTableView.reloadData()
+            sortedByText = false
+        } else {
+            sortByText.setTitle("Text UP", for: .normal)
+            NotesStorage.sortByText(sortedUp: sortedByText)
+            notesTableView.reloadData()
+            sortedByText = true
+        }
+    }
+    
+    
     @IBAction func sortByEditedDate(_ sender: UIButton) {
+        sortByEditedDate.layer.backgroundColor = UIColor.gray.cgColor
+        sortByText.layer.backgroundColor = UIColor.white.cgColor
+        
         if (sortedByEditedDate) {
-            sortByEditedDate.setTitle("Sort by date DOWN", for: .normal)
+            sortByEditedDate.setTitle("Date DN", for: .normal)
             NotesStorage.sortByEditDate(sortedUp: sortedByEditedDate)
             notesTableView.reloadData()
             sortedByEditedDate = false
         } else {
-            sortByEditedDate.setTitle("Sort by date UP", for: .normal)
+            sortByEditedDate.setTitle("Date UP", for: .normal)
             NotesStorage.sortByEditDate(sortedUp: sortedByEditedDate)
             notesTableView.reloadData()
             sortedByEditedDate = true
@@ -92,11 +126,15 @@ class ViewController: UIViewController {
     
     func setConstraints() {
         NSLayoutConstraint.activate([
-            sortByEditedDate.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            sortByEditedDate.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            sortByEditedDate.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
             sortByEditedDate.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
         ])
         
+        NSLayoutConstraint.activate([
+            sortByText.leadingAnchor.constraint(equalTo: sortByEditedDate.trailingAnchor, constant: 10),
+            sortByText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            sortByText.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
+        ])
         
         NSLayoutConstraint.activate([
             notesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

@@ -42,4 +42,12 @@ class NotesStorage {
             Self.notes = Self.notes.sorted { $0.lastEditedTimeStamp < $1.lastEditedTimeStamp }
         }
     }
+    
+    static func sortByText(sortedUp: Bool) {
+        if (sortedUp) {
+            Self.notes = Self.notes.sorted { $0.text > $1.text }
+        } else {
+            Self.notes = Self.notes.sorted { $0.text < $1.text }
+        }
+    }
 }
