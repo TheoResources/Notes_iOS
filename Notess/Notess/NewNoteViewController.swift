@@ -13,6 +13,7 @@ class NewNoteViewController: UIViewController {
     var imageView: UIImageView?
     var addImage: UIButton!
     var addedImages: [UIImage] = []
+    var imagesTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,6 +46,13 @@ class NewNoteViewController: UIViewController {
         addImage.translatesAutoresizingMaskIntoConstraints = false
         addImage.addTarget(self, action: #selector(addPhoto(_:)), for: .touchUpInside)
         view.addSubview(addImage)
+        
+        imagesTableView = UITableView()
+        imagesTableView.translatesAutoresizingMaskIntoConstraints = false
+        imagesTableView.dataSource = self
+        imagesTableView.delegate = self
+        imagesTableView.register(NoteImageTableViewCell.self, forCellReuseIdentifier: "id2")
+        view.addSubview(imagesTableView)
     }
     
     @IBAction func cancelNewNote(_ sender: UIBarButtonItem) {
@@ -88,6 +96,13 @@ class NewNoteViewController: UIViewController {
             addImage.topAnchor.constraint(equalTo: textNote.bottomAnchor, constant: 10),
             addImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
         ])
+        
+        NSLayoutConstraint.activate([
+            imagesTableView.topAnchor.constraint(equalTo: addImage.bottomAnchor, constant: 10),
+            imagesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            imagesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            imagesTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
     }
 }
 
@@ -100,8 +115,29 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
             return
         }
+
         addedImages.append(image)
+        imagesTableView.reloadData()
+        print(addedImages)
         picker.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension NewNoteViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.addedImages.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "id2", for: indexPath) as! NoteImageTableViewCell
+        cell.configure(for: self.addedImages[indexPath.row])
+        return cell
+    }
+}
+
+extension NewNoteViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
     }
 }
 

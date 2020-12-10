@@ -16,6 +16,7 @@
 		6D187683257E4870004397C7 /* NoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D187682257E4870004397C7 /* NoteTableViewCell.swift */; };
 		6D187686257ECF93004397C7 /* NewNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D187685257ECF93004397C7 /* NewNoteViewController.swift */; };
 		6D187689257FFFDB004397C7 /* NotesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D187688257FFFDB004397C7 /* NotesStorage.swift */; };
+		6D18768C258200C7004397C7 /* NoteImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D18768B258200C7004397C7 /* NoteImageTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		6D187682257E4870004397C7 /* NoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTableViewCell.swift; sourceTree = "<group>"; };
 		6D187685257ECF93004397C7 /* NewNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteViewController.swift; sourceTree = "<group>"; };
 		6D187688257FFFDB004397C7 /* NotesStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesStorage.swift; sourceTree = "<group>"; };
+		6D18768B258200C7004397C7 /* NoteImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteImageTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 				6D187682257E4870004397C7 /* NoteTableViewCell.swift */,
 				6D187685257ECF93004397C7 /* NewNoteViewController.swift */,
 				6D187688257FFFDB004397C7 /* NotesStorage.swift */,
+				6D18768B258200C7004397C7 /* NoteImageTableViewCell.swift */,
 			);
 			path = Notess;
 			sourceTree = "<group>";
@@ -148,6 +151,7 @@
 				6D187689257FFFDB004397C7 /* NotesStorage.swift in Sources */,
 				6D18766E257E0760004397C7 /* ViewController.swift in Sources */,
 				6D18766A257E0760004397C7 /* AppDelegate.swift in Sources */,
+				6D18768C258200C7004397C7 /* NoteImageTableViewCell.swift in Sources */,
 				6D18766C257E0760004397C7 /* SceneDelegate.swift in Sources */,
 				6D187683257E4870004397C7 /* NoteTableViewCell.swift in Sources */,
 				6D187680257E4588004397C7 /* Note.swift in Sources */,
