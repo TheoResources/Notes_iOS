@@ -10,7 +10,10 @@ import UIKit
 
 class NewNoteViewController: UIViewController {
     var textNote: UITextView!
-
+    var imageView: UIImageView?
+    var addImage: UIButton!
+    var addedImages: [UIImage] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray
@@ -36,6 +39,12 @@ class NewNoteViewController: UIViewController {
         textNote = UITextView()
         textNote.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(textNote)
+        
+        addImage = UIButton()
+        addImage.setTitle("Add photo", for: .normal)
+        addImage.translatesAutoresizingMaskIntoConstraints = false
+        addImage.addTarget(self, action: #selector(addPhoto(_:)), for: .touchUpInside)
+        view.addSubview(addImage)
     }
     
     @IBAction func cancelNewNote(_ sender: UIBarButtonItem) {
@@ -43,9 +52,16 @@ class NewNoteViewController: UIViewController {
     }
     
     @IBAction func saveNewNote(_ sender: UIBarButtonItem) {
-        NotesStorage.addNote(note: Note(text: textNote.text, lastEditedTimeStamp: Date().timeIntervalSince1970))
+        NotesStorage.addNote(note: Note(text: textNote.text, lastEditedTimeStamp: Date().timeIntervalSince1970, photos: addedImages))
         NotificationCenter.default.post(name: ViewController.reloadNotesNotification, object: nil)
         dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func addPhoto(_ sender: UIButton) {
+        let picker = UIImagePickerController()
+        picker.sourceType = .photoLibrary
+        picker.delegate = self
+        present(picker, animated: true)
     }
     
     @objc
@@ -67,6 +83,25 @@ class NewNoteViewController: UIViewController {
             textNote.heightAnchor.constraint(equalToConstant: 100),
             textNote.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
         ])
+        
+        NSLayoutConstraint.activate([
+            addImage.topAnchor.constraint(equalTo: textNote.bottomAnchor, constant: 10),
+            addImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
+        ])
+    }
+}
+
+extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+            return
+        }
+        addedImages.append(image)
+        picker.dismiss(animated: true, completion: nil)
     }
 }
 

@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import UIKit
 
 struct Note {
     var text: String
     var lastEditedTimeStamp: TimeInterval
+    var photos: [UIImage] = []
 }

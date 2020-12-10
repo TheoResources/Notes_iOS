@@ -28,7 +28,7 @@ class ViewController: UIViewController {
     
     var sortedByEditedDate: Bool = true
     var sortedByText: Bool = false
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -73,7 +73,7 @@ class ViewController: UIViewController {
         addButton = UIButton()
         addButton.setImage(.add, for: .normal)
         addButton.translatesAutoresizingMaskIntoConstraints = false
-        addButton.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        addButton.addTarget(self, action: #selector(openAddNote(_:)), for: .touchUpInside)
         view.addSubview(addButton)
     }
     
@@ -116,12 +116,11 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func buttonTapped(_ sender: UIButton) {
+    @IBAction func openAddNote(_ sender: UIButton) {
         let newNote = NewNoteViewController()
         let navigationVC = UINavigationController(rootViewController: newNote)
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)
-        
     }
     
     func setConstraints() {
@@ -187,4 +186,3 @@ extension ViewController: UITableViewDelegate {
     }
     
 }
-
