@@ -185,4 +185,12 @@ extension ViewController: UITableViewDelegate {
         return configuration
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let newNote = NewNoteViewController()
+        newNote.configure(index: indexPath.row, note: NotesStorage.getNoteByIndex(index: indexPath.row))
+        let navigationVC = UINavigationController(rootViewController: newNote)
+        navigationVC.modalPresentationStyle = .fullScreen
+        present(navigationVC, animated: true)
+    }
+    
 }

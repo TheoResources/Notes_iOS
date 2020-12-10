@@ -17,6 +17,10 @@ class NotesStorage {
         Self.notes.append(note)
     }
     
+    static func updateNoteAtIndex(index: Int, note: Note) {
+        Self.notes[index] = note
+    }
+    
     static func getNotes() -> [Note] {
         return Self.notes
     }

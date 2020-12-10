@@ -9,11 +9,14 @@ import Foundation
 import UIKit
 
 class NewNoteViewController: UIViewController {
+    var note: Note? = nil
     var textNote: UITextView!
     var imageView: UIImageView?
     var addImage: UIButton!
     var addedImages: [UIImage] = []
     var imagesTableView: UITableView!
+    var text: String = ""
+    var noteId: Int? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,9 +39,22 @@ class NewNoteViewController: UIViewController {
         setConstraints()
     }
     
+    func configure(index: Int, note: Note?) {
+        if let note = note {
+            addedImages = note.photos
+            text = note.text
+            noteId = index
+        } else {
+            addedImages = []
+            text = ""
+            noteId = nil
+        }
+    }
+    
     func setupViews() {
         textNote = UITextView()
         textNote.translatesAutoresizingMaskIntoConstraints = false
+        textNote.text = text
         view.addSubview(textNote)
         
         addImage = UIButton()
@@ -60,7 +76,12 @@ class NewNoteViewController: UIViewController {
     }
     
     @IBAction func saveNewNote(_ sender: UIBarButtonItem) {
-        NotesStorage.addNote(note: Note(text: textNote.text, lastEditedTimeStamp: Date().timeIntervalSince1970, photos: addedImages))
+        if let index = noteId {
+            NotesStorage.updateNoteAtIndex(index: index, note: Note(text: textNote.text, lastEditedTimeStamp: Date().timeIntervalSince1970, photos: addedImages))
+        } else {
+            NotesStorage.addNote(note: Note(text: textNote.text, lastEditedTimeStamp: Date().timeIntervalSince1970, photos: addedImages))
+        }
+    
         NotificationCenter.default.post(name: ViewController.reloadNotesNotification, object: nil)
         dismiss(animated: true, completion: nil)
     }
@@ -118,7 +139,6 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
 
         addedImages.append(image)
         imagesTableView.reloadData()
-        print(addedImages)
         picker.dismiss(animated: true, completion: nil)
     }
 }
@@ -136,8 +156,29 @@ extension NewNoteViewController: UITableViewDataSource {
 }
 
 extension NewNoteViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("selected \(indexPath.row)")
+    }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+    -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
+            if (self.addedImages.indices.contains(indexPath.row) ) {
+                self.addedImages.remove(at: indexPath.row)
+            }
+            
+            self.imagesTableView.reloadData()
+            completionHandler(true)
+        }
+        deleteAction.image = UIImage(systemName: "trash")
+        deleteAction.backgroundColor = .systemRed
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        return configuration
     }
 }
 
