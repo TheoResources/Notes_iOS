@@ -11,5 +11,11 @@ import UIKit
 struct Note {
     var text: String
     var lastEditedTimeStamp: TimeInterval
-    var photos: [UIImage] = []
+    var photos: [UIImage]
+    
+    init() {
+        self.text = ""
+        self.photos = []
+        self.lastEditedTimeStamp = 0
+    }
 }

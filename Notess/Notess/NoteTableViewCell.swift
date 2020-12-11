@@ -13,7 +13,6 @@ class NoteTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         shortText = UILabel()
         shortText.translatesAutoresizingMaskIntoConstraints = false
         shortText.font = .systemFont(ofSize: 14)

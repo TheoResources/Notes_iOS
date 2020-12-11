@@ -10,7 +10,6 @@
  TODO:
  - tagi notatki,
  - podglad zdjecia
- - odfiltrowac notatki tylko ze zdjeciem
  - sortowanie po tagach
  
  
@@ -38,7 +37,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(onNotification(notification:)), name: ViewController.reloadNotesNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onNotificationOfChangedNotes(notification:)), name: ViewController.reloadNotesNotification, object: nil)
         
         setupViews()
         setConstraints()
@@ -82,7 +81,7 @@ class ViewController: UIViewController {
         notesTableView.translatesAutoresizingMaskIntoConstraints = false
         notesTableView.dataSource = self
         notesTableView.delegate = self
-        notesTableView.register(NoteTableViewCell.self, forCellReuseIdentifier: "id")
+        notesTableView.register(NoteTableViewCell.self, forCellReuseIdentifier: "noteCellId")
         notesTableView.tableFooterView = UIView(frame: CGRect.zero)
         view.addSubview(notesTableView)
         
@@ -93,7 +92,7 @@ class ViewController: UIViewController {
         view.addSubview(addButton)
     }
     
-    @objc func onNotification(notification:Notification) {
+    @objc func onNotificationOfChangedNotes(notification:Notification) {
         notesTableView.reloadData()
     }
     
@@ -191,8 +190,9 @@ extension ViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "id", for: indexPath) as! NoteTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "noteCellId", for: indexPath) as! NoteTableViewCell
         cell.configure(for: NotesStorage.getNoteByIndex(index: indexPath.row))
+        cell.selectionStyle = .none
         return cell
     }
     

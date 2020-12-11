@@ -9,14 +9,13 @@ import Foundation
 import UIKit
 
 class NewNoteViewController: UIViewController {
-    var note: Note? = nil
+    var note: Note = Note()
+    
     var textNote: UITextView!
     var imageView: UIImageView?
     var addImage: UIButton!
-    var addedImages: [UIImage] = []
     var imagesTableView: UITableView!
-    var text: String = ""
-    var noteId: Int? = nil
+    var indexOfSelectedNote: Int? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,22 +38,15 @@ class NewNoteViewController: UIViewController {
         setConstraints()
     }
     
-    func configure(index: Int, note: Note?) {
-        if let note = note {
-            addedImages = note.photos
-            text = note.text
-            noteId = index
-        } else {
-            addedImages = []
-            text = ""
-            noteId = nil
-        }
+    func configure(index: Int, note: Note) {
+        self.note = note
+        self.indexOfSelectedNote = index
     }
     
     func setupViews() {
         textNote = UITextView()
         textNote.translatesAutoresizingMaskIntoConstraints = false
-        textNote.text = text
+        textNote.text = note.text
         view.addSubview(textNote)
         
         addImage = UIButton()
@@ -67,7 +59,7 @@ class NewNoteViewController: UIViewController {
         imagesTableView.translatesAutoresizingMaskIntoConstraints = false
         imagesTableView.dataSource = self
         imagesTableView.delegate = self
-        imagesTableView.register(NoteImageTableViewCell.self, forCellReuseIdentifier: "id2")
+        imagesTableView.register(NoteImageTableViewCell.self, forCellReuseIdentifier: "photoCellId")
         view.addSubview(imagesTableView)
     }
     
@@ -76,10 +68,12 @@ class NewNoteViewController: UIViewController {
     }
     
     @IBAction func saveNewNote(_ sender: UIBarButtonItem) {
-        if let index = noteId {
-            NotesStorage.updateNoteAtIndex(index: index, note: Note(text: textNote.text, lastEditedTimeStamp: Date().timeIntervalSince1970, photos: addedImages))
+        note.lastEditedTimeStamp = Date().timeIntervalSince1970
+        note.text = textNote.text
+        if let index = indexOfSelectedNote {
+            NotesStorage.updateNoteAtIndex(index: index, note: note)
         } else {
-            NotesStorage.addNote(note: Note(text: textNote.text, lastEditedTimeStamp: Date().timeIntervalSince1970, photos: addedImages))
+            NotesStorage.addNote(note: note)
         }
     
         NotificationCenter.default.post(name: ViewController.reloadNotesNotification, object: nil)
@@ -136,8 +130,7 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
             return
         }
-
-        addedImages.append(image)
+        self.note.photos.append(image)
         imagesTableView.reloadData()
         picker.dismiss(animated: true, completion: nil)
     }
@@ -145,12 +138,13 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
 
 extension NewNoteViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.addedImages.count
+        return self.note.photos.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "id2", for: indexPath) as! NoteImageTableViewCell
-        cell.configure(for: self.addedImages[indexPath.row])
+        let cell = tableView.dequeueReusableCell(withIdentifier: "photoCellId", for: indexPath) as! NoteImageTableViewCell
+        cell.configure(for: self.note.photos[indexPath.row])
+        cell.selectionStyle = .none
         return cell
     }
 }
@@ -168,8 +162,8 @@ extension NewNoteViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
     -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
-            if (self.addedImages.indices.contains(indexPath.row) ) {
-                self.addedImages.remove(at: indexPath.row)
+            if (self.note.photos.indices.contains(indexPath.row) ) {
+                self.note.photos.remove(at: indexPath.row)
             }
             
             self.imagesTableView.reloadData()
