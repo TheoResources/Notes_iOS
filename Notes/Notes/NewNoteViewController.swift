@@ -152,7 +152,11 @@ extension NewNoteViewController: UITableViewDataSource {
 extension NewNoteViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("selected \(indexPath.row)")
+        let photoViewController = PhotoViewController()
+        let navigationVC = UINavigationController(rootViewController: photoViewController)
+        navigationVC.modalPresentationStyle = .fullScreen
+        photoViewController.setImage(image: note.photos[indexPath.row])
+        present(navigationVC, animated: true)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
