@@ -1,6 +1,6 @@
 //
 //  Note.swift
-//  Notess
+//  Notes
 //
 //  Created by Michal Matlosz on 07/12/2020.
 //
@@ -17,5 +17,11 @@ struct Note {
         self.text = ""
         self.photos = []
         self.lastEditedTimeStamp = 0
+    }
+    
+    mutating func removePhotoByIndex(index: Int) {
+        if (self.photos.indices.contains(index) ) {
+            self.photos.remove(at: index)
+        }
     }
 }

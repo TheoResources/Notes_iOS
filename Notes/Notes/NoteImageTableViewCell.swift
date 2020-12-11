@@ -1,6 +1,6 @@
 //
 //  NoteImageTableViewCell.swift
-//  Notess
+//  Notes
 //
 //  Created by Michal Matlosz on 10/12/2020.
 //

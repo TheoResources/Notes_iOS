@@ -1,6 +1,6 @@
 //
 //  NewNoteViewController.swift
-//  Notess
+//  Notes
 //
 //  Created by Michal Matlosz on 07/12/2020.
 //
@@ -162,9 +162,7 @@ extension NewNoteViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
     -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
-            if (self.note.photos.indices.contains(indexPath.row) ) {
-                self.note.photos.remove(at: indexPath.row)
-            }
+            self.note.removePhotoByIndex(index: indexPath.row)
             
             self.imagesTableView.reloadData()
             completionHandler(true)
@@ -174,8 +172,4 @@ extension NewNoteViewController: UITableViewDelegate {
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         return configuration
     }
-}
-
-extension NewNoteViewController: UITextViewDelegate {
-    
 }

@@ -1,6 +1,6 @@
 //
 //  SceneDelegate.swift
-//  Notess
+//  Notes
 //
 //  Created by Michal Matlosz on 07/12/2020.
 //

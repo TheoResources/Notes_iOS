@@ -1,6 +1,6 @@
 //
 //  NotesStorage.swift
-//  Notess
+//  Notes
 //
 //  Created by Michal Matlosz on 08/12/2020.
 //

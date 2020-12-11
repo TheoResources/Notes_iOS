@@ -20,7 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6D187666257E0760004397C7 /* Notess.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Notess.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D187666257E0760004397C7 /* Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Notes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D187669257E0760004397C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6D18766B257E0760004397C7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		6D18766D257E0760004397C7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -48,7 +48,7 @@
 		6D18765D257E0760004397C7 = {
 			isa = PBXGroup;
 			children = (
-				6D187668257E0760004397C7 /* Notess */,
+				6D187668257E0760004397C7 /* Notes */,
 				6D187667257E0760004397C7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,12 +56,12 @@
 		6D187667257E0760004397C7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6D187666257E0760004397C7 /* Notess.app */,
+				6D187666257E0760004397C7 /* Notes.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		6D187668257E0760004397C7 /* Notess */ = {
+		6D187668257E0760004397C7 /* Notes */ = {
 			isa = PBXGroup;
 			children = (
 				6D187669257E0760004397C7 /* AppDelegate.swift */,
@@ -76,15 +76,15 @@
 				6D187688257FFFDB004397C7 /* NotesStorage.swift */,
 				6D18768B258200C7004397C7 /* NoteImageTableViewCell.swift */,
 			);
-			path = Notess;
+			path = Notes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6D187665257E0760004397C7 /* Notess */ = {
+		6D187665257E0760004397C7 /* Notes */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6D18767A257E0761004397C7 /* Build configuration list for PBXNativeTarget "Notess" */;
+			buildConfigurationList = 6D18767A257E0761004397C7 /* Build configuration list for PBXNativeTarget "Notes" */;
 			buildPhases = (
 				6D187662257E0760004397C7 /* Sources */,
 				6D187663257E0760004397C7 /* Frameworks */,
@@ -94,9 +94,9 @@
 			);
 			dependencies = (
 			);
-			name = Notess;
+			name = Notes;
 			productName = Notess;
-			productReference = 6D187666257E0760004397C7 /* Notess.app */;
+			productReference = 6D187666257E0760004397C7 /* Notes.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -113,7 +113,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 6D187661257E0760004397C7 /* Build configuration list for PBXProject "Notess" */;
+			buildConfigurationList = 6D187661257E0760004397C7 /* Build configuration list for PBXProject "Notes" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -126,7 +126,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6D187665257E0760004397C7 /* Notess */,
+				6D187665257E0760004397C7 /* Notes */,
 			);
 		};
 /* End PBXProject section */
@@ -295,12 +295,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = Notess/Info.plist;
+				INFOPLIST_FILE = Notes/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = pl.allegro.vanguard.notes.Notess;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.allegro.vanguard.notes.Notes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -313,12 +313,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = Notess/Info.plist;
+				INFOPLIST_FILE = Notes/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = pl.allegro.vanguard.notes.Notess;
+				PRODUCT_BUNDLE_IDENTIFIER = pl.allegro.vanguard.notes.Notes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -328,7 +328,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6D187661257E0760004397C7 /* Build configuration list for PBXProject "Notess" */ = {
+		6D187661257E0760004397C7 /* Build configuration list for PBXProject "Notes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6D187678257E0761004397C7 /* Debug */,
@@ -337,7 +337,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6D18767A257E0761004397C7 /* Build configuration list for PBXNativeTarget "Notess" */ = {
+		6D18767A257E0761004397C7 /* Build configuration list for PBXNativeTarget "Notes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6D18767B257E0761004397C7 /* Debug */,
