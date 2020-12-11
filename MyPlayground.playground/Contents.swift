@@ -3,6 +3,19 @@ import UIKit
 var str = "Hello, playground"
 
 
+var a: [String] = []
 
-let currentDate = Date().timeIntervalSince1970
-print(currentDate)
+a.append("ss")
+a.append("ddd")
+
+
+print(a)
+
+var b: [String] = []
+
+b = a
+
+
+b[0] = "XXX"
+print(b)
+print(a)

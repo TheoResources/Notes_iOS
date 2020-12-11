@@ -6,8 +6,12 @@
 //
 /*
  Aplikacja z notatkami
- - ViewController z listą notatek, możliwość dodania, swipe do usunięcia. tableView można sortować po dacie edycji, alfabetycznie, po tagach, można odfiltrować tylko te notatki które mają zdjęcia
- - ViewController ze szczegółami - tableView z sekcjami - 1 sekcja z treścią, 2 sekcja z listą dodanych zdjęć. Z tego VC możliwość edycji tekstu i dodania/usunięcia/podglądu zdjęć. Możliwość tagowania notatek
+ 
+ TODO:
+ - tagi notatki,
+ - podglad zdjecia
+ - odfiltrowac notatki tylko ze zdjeciem
+ - sortowanie po tagach
  
  
  
@@ -25,9 +29,11 @@ class ViewController: UIViewController {
     var addButton: UIButton!
     var sortByEditedDate: UIButton!
     var sortByText: UIButton!
+    var filterByPhotos: UIButton!
     
     var sortedByEditedDate: Bool = true
     var sortedByText: Bool = false
+    var filteredByPhotos: Bool = false
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,6 +68,16 @@ class ViewController: UIViewController {
         sortByText.addTarget(self, action: #selector(sortByText(_:)), for: .touchUpInside)
         view.addSubview(sortByText)
         
+        filterByPhotos = UIButton()
+        filterByPhotos.setTitle("With photos", for: .normal)
+        filterByPhotos.setTitleColor(.black, for: .normal)
+        filterByPhotos.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        filterByPhotos.layer.borderWidth = 1
+        filterByPhotos.layer.borderColor = UIColor.black.cgColor
+        filterByPhotos.translatesAutoresizingMaskIntoConstraints = false
+        filterByPhotos.addTarget(self, action: #selector(filterByPhotos(_:)), for: .touchUpInside)
+        view.addSubview(filterByPhotos)
+        
         notesTableView = UITableView()
         notesTableView.translatesAutoresizingMaskIntoConstraints = false
         notesTableView.dataSource = self
@@ -79,6 +95,20 @@ class ViewController: UIViewController {
     
     @objc func onNotification(notification:Notification) {
         notesTableView.reloadData()
+    }
+    
+    @IBAction func filterByPhotos(_ sender: UIButton) {
+        if (filteredByPhotos) {
+            filterByPhotos.layer.backgroundColor = UIColor.white.cgColor
+            NotesStorage.filterByPhotos(withPhotos: false)
+            filteredByPhotos = false
+            notesTableView.reloadData()
+        } else {
+            filterByPhotos.layer.backgroundColor = UIColor.gray.cgColor
+            NotesStorage.filterByPhotos(withPhotos: true)
+            filteredByPhotos = true
+            notesTableView.reloadData()
+        }
     }
     
     @IBAction func sortByText(_ sender: UIButton) {
@@ -131,8 +161,13 @@ class ViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             sortByText.leadingAnchor.constraint(equalTo: sortByEditedDate.trailingAnchor, constant: 10),
-            sortByText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             sortByText.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
+        ])
+        
+        NSLayoutConstraint.activate([
+            filterByPhotos.leadingAnchor.constraint(equalTo: sortByText.trailingAnchor, constant: 10),
+            filterByPhotos.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            filterByPhotos.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
         ])
         
         NSLayoutConstraint.activate([
@@ -152,7 +187,7 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return NotesStorage.getNotes().count
+        return NotesStorage.getNumberOfNotes()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
