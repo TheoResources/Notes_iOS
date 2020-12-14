@@ -19,12 +19,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
             let viewController = ViewController()
-            window.rootViewController = viewController
+            let navigationController = UINavigationController(rootViewController: viewController)
+            window.rootViewController = navigationController
             self.window = window
             window.makeKeyAndVisible()
         }
     }
 
+    @IBAction func cancelNewNote(_ sender: UIBarButtonItem) {
+        //dismiss(animated: true, completion: nil)
+    }
+    
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.

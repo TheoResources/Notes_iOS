@@ -15,7 +15,7 @@ class PhotoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelPhotoView))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.close, target: self, action: #selector(closePhotoView))
         
         setupView()
         setupConstraints()
@@ -44,9 +44,8 @@ class PhotoViewController: UIViewController {
         self.image = image
     }
     
-    @IBAction func cancelPhotoView(_ sender: UIBarButtonItem) {
+    @IBAction func closePhotoView(_ sender: UIBarButtonItem) {
         dismiss(animated: true, completion: nil)
     }
-
 
 }
