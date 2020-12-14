@@ -20,9 +20,11 @@ class ViewController: UIViewController {
     static let sectionName = "Notes"
     static let cellHeight: CGFloat = 50
     static let reloadNotesNotification = Notification.Name("refreshNotes")
-    let sortTextColorSelected = UIColor(red: 0, green: 122.0/255.0, blue: 255.0/255.0, alpha: 1)
+    static let sortTextColorSelected = UIColor(red: 0, green: 122.0/255.0, blue: 255.0/255.0, alpha: 1)
     let sortTextColorDeselected = UIColor(red: 0, green: 122.0/255.0, blue: 255.0/255.0, alpha: 0.5)
-    
+    let blackDownPointingTriangleUnicodeCharacter = "\u{25BC}"
+    let blackUpPointingTriangleUnicodeCharacter = "\u{25B2}"
+
     var notesTableView: UITableView!
     var sortByEditedDate: UIButton!
     var sortByText: UIButton!
@@ -46,8 +48,8 @@ class ViewController: UIViewController {
         view.backgroundColor = .white
         
         sortByEditedDate = UIButton()
-        sortByEditedDate.setTitle("Date \u{25BC}", for: .normal)
-        sortByEditedDate.setTitleColor(sortTextColorSelected, for: .normal)
+        sortByEditedDate.setTitle("Date \(blackDownPointingTriangleUnicodeCharacter)", for: .normal)
+        sortByEditedDate.setTitleColor(ViewController.sortTextColorSelected, for: .normal)
         sortByEditedDate.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         sortByEditedDate.translatesAutoresizingMaskIntoConstraints = false
         sortByEditedDate.addTarget(self, action: #selector(sortByEditedDate(_:)), for: .touchUpInside)
@@ -55,7 +57,7 @@ class ViewController: UIViewController {
         view.addSubview(sortByEditedDate)
         
         sortByText = UIButton()
-        sortByText.setTitle("Text \u{25BC}", for: .normal)
+        sortByText.setTitle("Text \(blackDownPointingTriangleUnicodeCharacter)", for: .normal)
         sortByText.setTitleColor(sortTextColorDeselected, for: .normal)
         sortByText.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         sortByText.translatesAutoresizingMaskIntoConstraints = false
@@ -66,7 +68,7 @@ class ViewController: UIViewController {
         filterByPhotos.setTitle("With photos \u{25CB}", for: .normal)
         filterByPhotos.setTitle("With photos \u{25CF}", for: .selected)
         filterByPhotos.setTitleColor(sortTextColorDeselected, for: .normal)
-        filterByPhotos.setTitleColor(sortTextColorSelected, for: .selected)
+        filterByPhotos.setTitleColor(ViewController.sortTextColorSelected, for: .selected)
         
         filterByPhotos.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         filterByPhotos.translatesAutoresizingMaskIntoConstraints = false
@@ -101,29 +103,19 @@ class ViewController: UIViewController {
     
     @IBAction func sortByText(_ sender: UIButton) {
         sortByEditedDate.setTitleColor(sortTextColorDeselected, for: .normal)
-        sortByText.setTitleColor(sortTextColorSelected, for: .normal)
+        sortByText.setTitleColor(ViewController.sortTextColorSelected, for: .normal)
         NotesStorage.sortByText(sortedUp: sortedByText)
-
-        if (sortedByText) {
-            sortByText.setTitle("Text \u{25B2}", for: .normal)
-        } else {
-            sortByText.setTitle("Text \u{25BC}", for: .normal)
-        }
+        sortByText.setTitle(getSortLabelText(labelSortName: "Text", isUp: sortedByText), for: .normal)
         sortedByText = !sortedByText
         notesTableView.reloadData()
     }
     
     
     @IBAction func sortByEditedDate(_ sender: UIButton) {
-        sortByEditedDate.setTitleColor(sortTextColorSelected, for: .normal)
+        sortByEditedDate.setTitleColor(ViewController.sortTextColorSelected, for: .normal)
         sortByText.setTitleColor(sortTextColorDeselected, for: .normal)
         NotesStorage.sortByEditDate(sortedUp: sortedByEditedDate)
-
-        if (sortedByEditedDate) {
-            sortByEditedDate.setTitle("Date \u{25B2}", for: .normal)
-        } else {
-            sortByEditedDate.setTitle("Date \u{25BC}", for: .normal)
-        }
+        sortByEditedDate.setTitle(getSortLabelText(labelSortName: "Date", isUp: sortedByEditedDate), for: .normal)
         sortedByEditedDate = !sortedByEditedDate
         notesTableView.reloadData()
     }
@@ -133,6 +125,13 @@ class ViewController: UIViewController {
         let navigationVC = UINavigationController(rootViewController: newNote)
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)
+    }
+    
+    func getSortLabelText(labelSortName: String, isUp: Bool) -> String {
+        if (isUp) {
+            return "\(labelSortName) \(blackUpPointingTriangleUnicodeCharacter)"
+        }
+        return "\(labelSortName) \(blackDownPointingTriangleUnicodeCharacter)"
     }
     
     func setConstraints() {
@@ -178,7 +177,7 @@ extension ViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let headerView = (view as? UITableViewHeaderFooterView)
-        headerView?.tintColor = sortTextColorSelected
+        headerView?.tintColor = ViewController.sortTextColorSelected
         headerView?.textLabel?.textColor = .white
     }
     

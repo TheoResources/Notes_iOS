@@ -19,21 +19,11 @@ class NewNoteViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemGray
+        view.backgroundColor = ViewController.sortTextColorSelected
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.cancel, target: self, action: #selector(cancelNewNote))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.save, target: self, action: #selector(saveNewNote))
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillShow(_:)),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillHide(_:)),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
-        
+
         setupViews()
         setConstraints()
     }
@@ -47,6 +37,8 @@ class NewNoteViewController: UIViewController {
         textNote = UITextView()
         textNote.translatesAutoresizingMaskIntoConstraints = false
         textNote.text = note.text
+        textNote.font = UIFont.systemFont(ofSize: 16)
+
         view.addSubview(textNote)
         
         addImage = UIButton()
@@ -60,6 +52,8 @@ class NewNoteViewController: UIViewController {
         imagesTableView.dataSource = self
         imagesTableView.delegate = self
         imagesTableView.register(NoteImageTableViewCell.self, forCellReuseIdentifier: "photoCellId")
+        imagesTableView.tableFooterView = UIView()
+        imagesTableView.separatorStyle = .singleLine
         view.addSubview(imagesTableView)
     }
     
@@ -87,18 +81,6 @@ class NewNoteViewController: UIViewController {
         present(picker, animated: true)
     }
     
-    @objc
-    private func keyboardWillShow(_ sender: Notification) {
-        //TODO?
-        //https://medium.com/nickelfox/ios-swift-expandable-textview-with-placeholder-fca5ed2556f4
-        //https://medium.com/@PaulWall43/how-to-raise-a-uitextfield-when-the-keyboard-shows-ccfa6553c911
-    }
-    
-    @objc
-    private func keyboardWillHide(_ sender: Notification) {
-        //TODO?
-    }
-    
     func setConstraints() {
         NSLayoutConstraint.activate([
             textNote.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -109,7 +91,9 @@ class NewNoteViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             addImage.topAnchor.constraint(equalTo: textNote.bottomAnchor, constant: 10),
-            addImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
+            addImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            addImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+            addImage.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0)
         ])
         
         NSLayoutConstraint.activate([
@@ -145,6 +129,7 @@ extension NewNoteViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "photoCellId", for: indexPath) as! NoteImageTableViewCell
         cell.configure(for: self.note.photos[indexPath.row])
         cell.selectionStyle = .none
+        cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         return cell
     }
 }
