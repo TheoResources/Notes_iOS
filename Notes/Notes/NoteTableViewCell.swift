@@ -15,7 +15,7 @@ class NoteTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         shortText = UILabel()
         shortText.translatesAutoresizingMaskIntoConstraints = false
-        shortText.font = .systemFont(ofSize: 14)
+        shortText.font = .systemFont(ofSize: 16)
         contentView.addSubview(shortText)
         setupConstraints()
     }
@@ -25,14 +25,15 @@ class NoteTableViewCell: UITableViewCell {
     }
     
     func configure(for note: Note)  {
-        shortText.text = "\(note.text) -  \(note.lastEditedTimeStamp)"
+        shortText.text = note.text
     }
     
     func setupConstraints() {
         NSLayoutConstraint.activate([
-            shortText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            shortText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             shortText.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            shortText.heightAnchor.constraint(equalToConstant: 16)
+            shortText.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            shortText.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
         ])
     }
     

@@ -23,7 +23,6 @@ class ViewController: UIViewController {
     let sortTextColorSelected = UIColor(red: 0, green: 122.0/255.0, blue: 255.0/255.0, alpha: 1)
     let sortTextColorDeselected = UIColor(red: 0, green: 122.0/255.0, blue: 255.0/255.0, alpha: 0.5)
     
-    
     var notesTableView: UITableView!
     var sortByEditedDate: UIButton!
     var sortByText: UIButton!
@@ -80,7 +79,8 @@ class ViewController: UIViewController {
         notesTableView.dataSource = self
         notesTableView.delegate = self
         notesTableView.register(NoteTableViewCell.self, forCellReuseIdentifier: "noteCellId")
-        notesTableView.tableFooterView = UIView(frame: CGRect.zero)
+        notesTableView.tableFooterView = UIView()
+        notesTableView.separatorStyle = .singleLine
         view.addSubview(notesTableView)
     }
     
@@ -102,36 +102,30 @@ class ViewController: UIViewController {
     @IBAction func sortByText(_ sender: UIButton) {
         sortByEditedDate.setTitleColor(sortTextColorDeselected, for: .normal)
         sortByText.setTitleColor(sortTextColorSelected, for: .normal)
-        
+        NotesStorage.sortByText(sortedUp: sortedByText)
+
         if (sortedByText) {
             sortByText.setTitle("Text \u{25B2}", for: .normal)
-            NotesStorage.sortByText(sortedUp: sortedByText)
-            notesTableView.reloadData()
-            sortedByText = false
         } else {
             sortByText.setTitle("Text \u{25BC}", for: .normal)
-            NotesStorage.sortByText(sortedUp: sortedByText)
-            notesTableView.reloadData()
-            sortedByText = true
         }
+        sortedByText = !sortedByText
+        notesTableView.reloadData()
     }
     
     
     @IBAction func sortByEditedDate(_ sender: UIButton) {
         sortByEditedDate.setTitleColor(sortTextColorSelected, for: .normal)
         sortByText.setTitleColor(sortTextColorDeselected, for: .normal)
-        
+        NotesStorage.sortByEditDate(sortedUp: sortedByEditedDate)
+
         if (sortedByEditedDate) {
             sortByEditedDate.setTitle("Date \u{25B2}", for: .normal)
-            NotesStorage.sortByEditDate(sortedUp: sortedByEditedDate)
-            notesTableView.reloadData()
-            sortedByEditedDate = false
         } else {
             sortByEditedDate.setTitle("Date \u{25BC}", for: .normal)
-            NotesStorage.sortByEditDate(sortedUp: sortedByEditedDate)
-            notesTableView.reloadData()
-            sortedByEditedDate = true
         }
+        sortedByEditedDate = !sortedByEditedDate
+        notesTableView.reloadData()
     }
     
     @IBAction func openAddNote(_ sender: UIBarButtonItem) {
@@ -160,8 +154,8 @@ class ViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            notesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            notesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            notesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            notesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
             notesTableView.topAnchor.constraint(equalTo: sortByEditedDate.bottomAnchor, constant: 10),
             notesTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
@@ -178,6 +172,7 @@ extension ViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "noteCellId", for: indexPath) as! NoteTableViewCell
         cell.configure(for: NotesStorage.getNoteByIndex(index: indexPath.row))
         cell.selectionStyle = .none
+        cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         return cell
     }
     
