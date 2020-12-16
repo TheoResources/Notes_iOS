@@ -9,11 +9,11 @@ import UIKit
 
 class NoteTableViewCell: UITableViewCell {
     
-    var shortText: UILabel!
+    var shortText: UILabel = UILabel()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        shortText = UILabel()
+
         shortText.translatesAutoresizingMaskIntoConstraints = false
         shortText.font = .systemFont(ofSize: 16)
         contentView.addSubview(shortText)

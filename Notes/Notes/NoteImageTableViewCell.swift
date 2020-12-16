@@ -8,12 +8,11 @@ import UIKit
 
 class NoteImageTableViewCell: UITableViewCell {
     
-    var photoView: UIImageView!
+    var photoView: UIImageView = UIImageView()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        photoView = UIImageView()
         photoView.contentMode = .scaleAspectFit
         photoView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(photoView)

@@ -9,13 +9,13 @@ import UIKit
 
 class PhotoViewController: UIViewController {
 
-    var imageView: UIImageView!
-    var image: UIImage!
+    var imageView: UIImageView = UIImageView()
+    var image: UIImage = UIImage()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.close, target: self, action: #selector(closePhotoView))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closePhotoViewTap))
         
         setupView()
         setupConstraints()
@@ -24,7 +24,6 @@ class PhotoViewController: UIViewController {
     func setupView() {
         view.backgroundColor = .black
 
-        imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = image
         imageView.contentMode = .scaleAspectFit
@@ -44,7 +43,7 @@ class PhotoViewController: UIViewController {
         self.image = image
     }
     
-    @IBAction func closePhotoView(_ sender: UIBarButtonItem) {
+    @objc func closePhotoViewTap() {
         dismiss(animated: true, completion: nil)
     }
 

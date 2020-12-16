@@ -49,8 +49,6 @@ class NotesViewController: UIViewController {
     func setupViews() {
         view.backgroundColor = .white
         
-        sortByEditedDateButton = UIButton()
-        
         sortByEditedDateButton.setTitle(getSortLabelText(labelSortName: "Date", isUp: false), for: .normal)
         sortByEditedDateButton.setTitleColor(NotesViewController.sortTextColorSelected, for: .normal)
         sortByEditedDateButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
@@ -59,7 +57,6 @@ class NotesViewController: UIViewController {
         sortByEditedDateButton.contentHorizontalAlignment = .left
         view.addSubview(sortByEditedDateButton)
         
-        sortByTextButton = UIButton()
         sortByTextButton.setTitle(getSortLabelText(labelSortName: "Text", isUp: false), for: .normal)
         sortByTextButton.setTitleColor(sortTextColorDeselected, for: .normal)
         sortByTextButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
@@ -67,7 +64,6 @@ class NotesViewController: UIViewController {
         sortByTextButton.addTarget(self, action: #selector(sortByTextTap), for: .touchUpInside)
         view.addSubview(sortByTextButton)
         
-        filterByPhotosButton = UIButton()
         filterByPhotosButton.setTitle(filterByPhotosOffTitle, for: .normal)
         filterByPhotosButton.setTitle(filterByPhotosOnTitle, for: .selected)
         filterByPhotosButton.setTitleColor(sortTextColorDeselected, for: .normal)
@@ -79,7 +75,6 @@ class NotesViewController: UIViewController {
         filterByPhotosButton.contentHorizontalAlignment = .right
         view.addSubview(filterByPhotosButton)
         
-        notesTableView = UITableView()
         notesTableView.translatesAutoresizingMaskIntoConstraints = false
         notesTableView.register(NoteTableViewCell.self, forCellReuseIdentifier: "noteCellId")
         notesTableView.dataSource = self

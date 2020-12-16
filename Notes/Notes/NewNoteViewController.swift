@@ -11,18 +11,18 @@ import UIKit
 class NewNoteViewController: UIViewController {
     var note: Note = Note()
     
-    var textNote: UITextView!
+    var textNote: UITextView = UITextView()
     var imageView: UIImageView?
-    var addImage: UIButton!
-    var imagesTableView: UITableView!
+    var addImageButton: UIButton = UIButton()
+    var imagesTableView: UITableView = UITableView()
     var indexOfSelectedNote: Int? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = NotesViewController.sortTextColorSelected
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelNewNote))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveNewNote))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelNewNoteTap))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveNewNoteTap))
 
         setupViews()
         setConstraints()
@@ -34,20 +34,16 @@ class NewNoteViewController: UIViewController {
     }
     
     func setupViews() {
-        textNote = UITextView()
         textNote.translatesAutoresizingMaskIntoConstraints = false
         textNote.text = note.text
         textNote.font = UIFont.systemFont(ofSize: 16)
-
         view.addSubview(textNote)
         
-        addImage = UIButton()
-        addImage.setTitle("Add photo", for: .normal)
-        addImage.translatesAutoresizingMaskIntoConstraints = false
-        addImage.addTarget(self, action: #selector(addPhoto(_:)), for: .touchUpInside)
-        view.addSubview(addImage)
+        addImageButton.setTitle("Add photo", for: .normal)
+        addImageButton.translatesAutoresizingMaskIntoConstraints = false
+        addImageButton.addTarget(self, action: #selector(addPhotoTap), for: .touchUpInside)
+        view.addSubview(addImageButton)
         
-        imagesTableView = UITableView()
         imagesTableView.translatesAutoresizingMaskIntoConstraints = false
         imagesTableView.dataSource = self
         imagesTableView.delegate = self
@@ -57,11 +53,11 @@ class NewNoteViewController: UIViewController {
         view.addSubview(imagesTableView)
     }
     
-    @IBAction func cancelNewNote(_ sender: UIBarButtonItem) {
+    @objc func cancelNewNoteTap() {
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func saveNewNote(_ sender: UIBarButtonItem) {
+    @objc func saveNewNoteTap() {
         note.lastEditedTimeStamp = Date().timeIntervalSince1970
         note.text = textNote.text
         if let index = indexOfSelectedNote {
@@ -74,7 +70,7 @@ class NewNoteViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func addPhoto(_ sender: UIButton) {
+    @objc func addPhotoTap() {
         let picker = UIImagePickerController()
         picker.sourceType = .photoLibrary
         picker.delegate = self
@@ -90,14 +86,14 @@ class NewNoteViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            addImage.topAnchor.constraint(equalTo: textNote.bottomAnchor, constant: 10),
-            addImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            addImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
-            addImage.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0)
+            addImageButton.topAnchor.constraint(equalTo: textNote.bottomAnchor, constant: 10),
+            addImageButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            addImageButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+            addImageButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0)
         ])
         
         NSLayoutConstraint.activate([
-            imagesTableView.topAnchor.constraint(equalTo: addImage.bottomAnchor, constant: 10),
+            imagesTableView.topAnchor.constraint(equalTo: addImageButton.bottomAnchor, constant: 10),
             imagesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             imagesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             imagesTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
@@ -111,7 +107,7 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+        guard let image = info[.originalImage] as? UIImage else {
             return
         }
         self.note.photos.append(image)

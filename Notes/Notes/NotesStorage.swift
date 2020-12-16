@@ -72,15 +72,15 @@ class NotesStorage {
             Self.displayableNotes = Array(Self.notesStorage.values)
         }
         
-        if let sortedData = Self.sortedByEditDate {
-            if (sortedData) {
+        if let sortedByEditDate = Self.sortedByEditDate {
+            if (sortedByEditDate) {
                 Self.displayableNotes = Self.displayableNotes.sorted { $0.lastEditedTimeStamp > $1.lastEditedTimeStamp }
             } else {
                 Self.displayableNotes = Self.displayableNotes.sorted { $0.lastEditedTimeStamp < $1.lastEditedTimeStamp }
             }
         }
-        if let sortedData2 = Self.sortedByText {
-            if (sortedData2) {
+        if let sortedByText = Self.sortedByText {
+            if (sortedByText) {
                 Self.displayableNotes = Self.displayableNotes.sorted { $0.text > $1.text }
             } else {
                 Self.displayableNotes = Self.displayableNotes.sorted { $0.text < $1.text }
