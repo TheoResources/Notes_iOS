@@ -8,23 +8,28 @@
 import Foundation
 
 class NotesStorage {
+    //TODO core data /sqlite
+    private static var notesWithoutPhotos: [Note] = []
+    private static var notesWithPhotos: [Note] = []
     
-    private static var notes: [Note] = []
+    private static var sortedByEditDate: Bool? = false
+    private static var sortedByText: Bool? = nil
     
     static var displayableNotes: [Note] = []
+    static var notesStorage: [String: Note] = [:]
     
     static var withPhotosEnabled: Bool = false
     
     init() {}
     
     static func addNote(note: Note) {
-        Self.notes.append(note)
-        Self.displayableNotes = Self.notes
+        notesStorage[note.id] = note
+        prepareData()
     }
     
     static func updateNoteAtIndex(index: Int, note: Note) {
-        Self.notes[index] = note
-        Self.displayableNotes = Self.notes
+        Self.notesStorage[note.id] = note
+        prepareData()
     }
     
     static func getNumberOfNotes() -> Int {
@@ -36,36 +41,51 @@ class NotesStorage {
     }
     
     static func removeNoteByIndex(index: Int) {
-        if (Self.notes.indices.contains(index) ) {
-            Self.notes.remove(at: index)
+        if (Self.displayableNotes.indices.contains(index) ) {
+            let note = Self.displayableNotes[index]
+            Self.notesStorage.removeValue(forKey: note.id)
         }
-        Self.displayableNotes = Self.notes
+        prepareData()
     }
     
     static func sortByEditDate(sortedUp: Bool) {
-        if (sortedUp) {
-            Self.notes = Self.displayableNotes.sorted { $0.lastEditedTimeStamp > $1.lastEditedTimeStamp }
-        } else {
-            Self.notes = Self.displayableNotes.sorted { $0.lastEditedTimeStamp < $1.lastEditedTimeStamp }
-        }
-        Self.displayableNotes = Self.notes
+        Self.sortedByEditDate = sortedUp
+        Self.sortedByText = nil
+        prepareData()
     }
     
     static func sortByText(sortedUp: Bool) {
-        if (sortedUp) {
-            Self.notes = Self.displayableNotes.sorted { $0.text > $1.text }
-        } else {
-            Self.notes = Self.displayableNotes.sorted { $0.text < $1.text }
-        }
-        Self.displayableNotes = Self.notes
+        Self.sortedByText = sortedUp
+        Self.sortedByEditDate = nil
+        prepareData()
     }
     
     static func filterByPhotos(withPhotos: Bool) {
         Self.withPhotosEnabled = withPhotos
+        prepareData()
+    }
+    
+    private static func prepareData() {
         if (Self.withPhotosEnabled) {
-            Self.displayableNotes = Self.notes.filter { note in return note.photos.count > 0 }
+            Self.displayableNotes = Array(Self.notesStorage.values).filter { note in return note.photos.count > 0 }
         } else {
-            Self.displayableNotes = Self.notes
+            Self.displayableNotes = Array(Self.notesStorage.values)
         }
+        
+        if let sortedData = Self.sortedByEditDate {
+            if (sortedData) {
+                Self.displayableNotes = Self.displayableNotes.sorted { $0.lastEditedTimeStamp > $1.lastEditedTimeStamp }
+            } else {
+                Self.displayableNotes = Self.displayableNotes.sorted { $0.lastEditedTimeStamp < $1.lastEditedTimeStamp }
+            }
+        }
+        if let sortedData2 = Self.sortedByText {
+            if (sortedData2) {
+                Self.displayableNotes = Self.displayableNotes.sorted { $0.text > $1.text }
+            } else {
+                Self.displayableNotes = Self.displayableNotes.sorted { $0.text < $1.text }
+            }
+        }
+        
     }
 }

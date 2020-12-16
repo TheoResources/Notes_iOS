@@ -15,7 +15,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class NotesViewController: UIViewController {
     
     static let sectionName = "Notes"
     static let cellHeight: CGFloat = 50
@@ -24,11 +24,13 @@ class ViewController: UIViewController {
     let sortTextColorDeselected = UIColor(red: 0, green: 122.0/255.0, blue: 255.0/255.0, alpha: 0.5)
     let blackDownPointingTriangleUnicodeCharacter = "\u{25BC}"
     let blackUpPointingTriangleUnicodeCharacter = "\u{25B2}"
+    let filterByPhotosOffTitle = "With photos \u{25CB}"
+    let filterByPhotosOnTitle = "With photos \u{25CF}"
 
-    var notesTableView: UITableView!
-    var sortByEditedDate: UIButton!
-    var sortByText: UIButton!
-    var filterByPhotos: UIButton!
+    var notesTableView: UITableView = UITableView()
+    var sortByEditedDateButton: UIButton = UIButton()
+    var sortByTextButton: UIButton = UIButton()
+    var filterByPhotosButton: UIButton = UIButton()
     
     var sortedByEditedDate: Bool = true
     var sortedByText: Bool = false
@@ -36,9 +38,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(onNotificationOfChangedNotes(notification:)), name: ViewController.reloadNotesNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(onNotificationOfChangedNotes(notification:)), name: NotesViewController.reloadNotesNotification, object: nil)
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(openAddNote))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(openAddNote))
         
         setupViews()
         setConstraints()
@@ -47,40 +49,41 @@ class ViewController: UIViewController {
     func setupViews() {
         view.backgroundColor = .white
         
-        sortByEditedDate = UIButton()
-        sortByEditedDate.setTitle("Date \(blackDownPointingTriangleUnicodeCharacter)", for: .normal)
-        sortByEditedDate.setTitleColor(ViewController.sortTextColorSelected, for: .normal)
-        sortByEditedDate.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        sortByEditedDate.translatesAutoresizingMaskIntoConstraints = false
-        sortByEditedDate.addTarget(self, action: #selector(sortByEditedDate(_:)), for: .touchUpInside)
-        sortByEditedDate.contentHorizontalAlignment = .left
-        view.addSubview(sortByEditedDate)
+        sortByEditedDateButton = UIButton()
         
-        sortByText = UIButton()
-        sortByText.setTitle("Text \(blackDownPointingTriangleUnicodeCharacter)", for: .normal)
-        sortByText.setTitleColor(sortTextColorDeselected, for: .normal)
-        sortByText.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        sortByText.translatesAutoresizingMaskIntoConstraints = false
-        sortByText.addTarget(self, action: #selector(sortByText(_:)), for: .touchUpInside)
-        view.addSubview(sortByText)
+        sortByEditedDateButton.setTitle(getSortLabelText(labelSortName: "Date", isUp: false), for: .normal)
+        sortByEditedDateButton.setTitleColor(NotesViewController.sortTextColorSelected, for: .normal)
+        sortByEditedDateButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        sortByEditedDateButton.translatesAutoresizingMaskIntoConstraints = false
+        sortByEditedDateButton.addTarget(self, action: #selector(sortByEditedDateTap), for: .touchUpInside)
+        sortByEditedDateButton.contentHorizontalAlignment = .left
+        view.addSubview(sortByEditedDateButton)
         
-        filterByPhotos = UIButton()
-        filterByPhotos.setTitle("With photos \u{25CB}", for: .normal)
-        filterByPhotos.setTitle("With photos \u{25CF}", for: .selected)
-        filterByPhotos.setTitleColor(sortTextColorDeselected, for: .normal)
-        filterByPhotos.setTitleColor(ViewController.sortTextColorSelected, for: .selected)
+        sortByTextButton = UIButton()
+        sortByTextButton.setTitle(getSortLabelText(labelSortName: "Text", isUp: false), for: .normal)
+        sortByTextButton.setTitleColor(sortTextColorDeselected, for: .normal)
+        sortByTextButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        sortByTextButton.translatesAutoresizingMaskIntoConstraints = false
+        sortByTextButton.addTarget(self, action: #selector(sortByTextTap), for: .touchUpInside)
+        view.addSubview(sortByTextButton)
         
-        filterByPhotos.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        filterByPhotos.translatesAutoresizingMaskIntoConstraints = false
-        filterByPhotos.addTarget(self, action: #selector(filterByPhotos(_:)), for: .touchUpInside)
-        filterByPhotos.contentHorizontalAlignment = .right
-        view.addSubview(filterByPhotos)
+        filterByPhotosButton = UIButton()
+        filterByPhotosButton.setTitle(filterByPhotosOffTitle, for: .normal)
+        filterByPhotosButton.setTitle(filterByPhotosOnTitle, for: .selected)
+        filterByPhotosButton.setTitleColor(sortTextColorDeselected, for: .normal)
+        filterByPhotosButton.setTitleColor(NotesViewController.sortTextColorSelected, for: .selected)
+        
+        filterByPhotosButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        filterByPhotosButton.translatesAutoresizingMaskIntoConstraints = false
+        filterByPhotosButton.addTarget(self, action: #selector(filterByPhotosTap(_:)), for: .touchUpInside)
+        filterByPhotosButton.contentHorizontalAlignment = .right
+        view.addSubview(filterByPhotosButton)
         
         notesTableView = UITableView()
         notesTableView.translatesAutoresizingMaskIntoConstraints = false
+        notesTableView.register(NoteTableViewCell.self, forCellReuseIdentifier: "noteCellId")
         notesTableView.dataSource = self
         notesTableView.delegate = self
-        notesTableView.register(NoteTableViewCell.self, forCellReuseIdentifier: "noteCellId")
         notesTableView.tableFooterView = UIView()
         notesTableView.separatorStyle = .singleLine
         view.addSubview(notesTableView)
@@ -90,7 +93,7 @@ class ViewController: UIViewController {
         notesTableView.reloadData()
     }
     
-    @IBAction func filterByPhotos(_ sender: UIButton) {
+    @objc func filterByPhotosTap(_ sender: UIButton) {
         sender.isSelected.toggle()
         if (sender.isSelected) {
             NotesStorage.filterByPhotos(withPhotos: true)
@@ -101,21 +104,21 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func sortByText(_ sender: UIButton) {
-        sortByEditedDate.setTitleColor(sortTextColorDeselected, for: .normal)
-        sortByText.setTitleColor(ViewController.sortTextColorSelected, for: .normal)
+    @objc func sortByTextTap() {
+        sortByEditedDateButton.setTitleColor(sortTextColorDeselected, for: .normal)
+        sortByTextButton.setTitleColor(NotesViewController.sortTextColorSelected, for: .normal)
         NotesStorage.sortByText(sortedUp: sortedByText)
-        sortByText.setTitle(getSortLabelText(labelSortName: "Text", isUp: sortedByText), for: .normal)
+        sortByTextButton.setTitle(getSortLabelText(labelSortName: "Text", isUp: sortedByText), for: .normal)
         sortedByText = !sortedByText
         notesTableView.reloadData()
     }
     
     
-    @IBAction func sortByEditedDate(_ sender: UIButton) {
-        sortByEditedDate.setTitleColor(ViewController.sortTextColorSelected, for: .normal)
-        sortByText.setTitleColor(sortTextColorDeselected, for: .normal)
+    @objc func sortByEditedDateTap() {
+        sortByEditedDateButton.setTitleColor(NotesViewController.sortTextColorSelected, for: .normal)
+        sortByTextButton.setTitleColor(sortTextColorDeselected, for: .normal)
         NotesStorage.sortByEditDate(sortedUp: sortedByEditedDate)
-        sortByEditedDate.setTitle(getSortLabelText(labelSortName: "Date", isUp: sortedByEditedDate), for: .normal)
+        sortByEditedDateButton.setTitle(getSortLabelText(labelSortName: "Date", isUp: sortedByEditedDate), for: .normal)
         sortedByEditedDate = !sortedByEditedDate
         notesTableView.reloadData()
     }
@@ -136,33 +139,33 @@ class ViewController: UIViewController {
     
     func setConstraints() {
         NSLayoutConstraint.activate([
-            sortByEditedDate.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            sortByEditedDate.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
+            sortByEditedDateButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            sortByEditedDateButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
         ])
         
         NSLayoutConstraint.activate([
-            sortByText.leadingAnchor.constraint(equalTo: sortByEditedDate.trailingAnchor, constant: 10),
-            sortByText.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            sortByText.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
+            sortByTextButton.leadingAnchor.constraint(equalTo: sortByEditedDateButton.trailingAnchor, constant: 10),
+            sortByTextButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            sortByTextButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
         ])
         
         NSLayoutConstraint.activate([
-            filterByPhotos.leadingAnchor.constraint(equalTo: sortByText.trailingAnchor, constant: 10),
-            filterByPhotos.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            filterByPhotos.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
+            filterByPhotosButton.leadingAnchor.constraint(equalTo: sortByTextButton.trailingAnchor, constant: 10),
+            filterByPhotosButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            filterByPhotosButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
         ])
         
         NSLayoutConstraint.activate([
             notesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
             notesTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-            notesTableView.topAnchor.constraint(equalTo: sortByEditedDate.bottomAnchor, constant: 10),
+            notesTableView.topAnchor.constraint(equalTo: sortByEditedDateButton.bottomAnchor, constant: 10),
             notesTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])
     }
     
 }
 
-extension ViewController: UITableViewDataSource {
+extension NotesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return NotesStorage.getNumberOfNotes()
     }
@@ -177,7 +180,7 @@ extension ViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let headerView = (view as? UITableViewHeaderFooterView)
-        headerView?.tintColor = ViewController.sortTextColorSelected
+        headerView?.tintColor = NotesViewController.sortTextColorSelected
         headerView?.textLabel?.textColor = .white
     }
     
@@ -190,7 +193,7 @@ extension ViewController: UITableViewDataSource {
     }
 }
 
-extension ViewController: UITableViewDelegate {
+extension NotesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return Self.cellHeight

@@ -19,10 +19,10 @@ class NewNoteViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = ViewController.sortTextColorSelected
+        view.backgroundColor = NotesViewController.sortTextColorSelected
         
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.cancel, target: self, action: #selector(cancelNewNote))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.save, target: self, action: #selector(saveNewNote))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelNewNote))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveNewNote))
 
         setupViews()
         setConstraints()
@@ -70,7 +70,7 @@ class NewNoteViewController: UIViewController {
             NotesStorage.addNote(note: note)
         }
     
-        NotificationCenter.default.post(name: ViewController.reloadNotesNotification, object: nil)
+        NotificationCenter.default.post(name: NotesViewController.reloadNotesNotification, object: nil)
         dismiss(animated: true, completion: nil)
     }
     
