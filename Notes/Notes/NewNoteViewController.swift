@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+protocol NewNoteDelegate: class {
+    func didAddNewNote()
+}
+
 class NewNoteViewController: UIViewController {
     var note: Note = Note()
     
@@ -16,6 +20,8 @@ class NewNoteViewController: UIViewController {
     var addImageButton: UIButton = UIButton()
     var imagesTableView: UITableView = UITableView()
     var indexOfSelectedNote: Int? = nil
+    
+    weak var delegate: NewNoteDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,7 +72,8 @@ class NewNoteViewController: UIViewController {
             NotesStorage.addNote(note: note)
         }
     
-        NotificationCenter.default.post(name: NotesViewController.reloadNotesNotification, object: nil)
+        delegate?.didAddNewNote()
+        
         dismiss(animated: true, completion: nil)
     }
     

@@ -27,7 +27,7 @@ class NoteImageTableViewCell: UITableViewCell {
         photoView.image = image
     }
         
-    func setupConstraints() {
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
             photoView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             photoView.topAnchor.constraint(equalTo: contentView.topAnchor),

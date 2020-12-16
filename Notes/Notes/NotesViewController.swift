@@ -37,9 +37,7 @@ class NotesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(onNotificationOfChangedNotes(notification:)), name: NotesViewController.reloadNotesNotification, object: nil)
-        
+                
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(openAddNote))
         
         setupViews()
@@ -84,10 +82,6 @@ class NotesViewController: UIViewController {
         view.addSubview(notesTableView)
     }
     
-    @objc func onNotificationOfChangedNotes(notification:Notification) {
-        notesTableView.reloadData()
-    }
-    
     @objc func filterByPhotosTap(_ sender: UIButton) {
         sender.isSelected.toggle()
         if (sender.isSelected) {
@@ -120,6 +114,7 @@ class NotesViewController: UIViewController {
     
     @IBAction func openAddNote(_ sender: UIBarButtonItem) {
         let newNote = NewNoteViewController()
+        newNote.delegate = self
         let navigationVC = UINavigationController(rootViewController: newNote)
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)
@@ -214,5 +209,10 @@ extension NotesViewController: UITableViewDelegate {
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)
     }
-    
+}
+
+extension NotesViewController: NewNoteDelegate {
+    func didAddNewNote() {
+        notesTableView.reloadData()
+    }
 }
