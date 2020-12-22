@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 import CoreData
+import Alamofire
+import AlamofireImage
 
 protocol NewNoteDelegate: class {
     func didAddNewNote()
@@ -140,8 +142,10 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
         }
         
         let singleImage = SingleImage(context: context)
-        singleImage.img = image.jpegData(compressionQuality: 1.0)
-        self.note.addToImg(singleImage)
+        if let image = image.jpegData(compressionQuality: 1.0) {
+            singleImage.img = image
+            self.note.addToImg(singleImage)
+        }
         do {
             try self.context.save()
         } catch {
@@ -158,9 +162,9 @@ extension NewNoteViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "photoCellId", for: indexPath) as! NoteImageTableViewCell
-        
-        if let img = self.photosOfNote[indexPath.row].img {
-            cell.configure(for: UIImage(data: img)!) //TODO pozbyc sie !
+        let photo = self.photosOfNote[indexPath.row].img
+        if let image = UIImage(data: photo) {
+            cell.configure(for: image)
         }
         
         cell.selectionStyle = .none
@@ -175,8 +179,9 @@ extension NewNoteViewController: UITableViewDelegate {
         let photoViewController = PhotoViewController()
         let navigationVC = UINavigationController(rootViewController: photoViewController)
         navigationVC.modalPresentationStyle = .fullScreen
-        if let img = self.photosOfNote[indexPath.row].img {
-            photoViewController.setImage(image: UIImage(data: img)!) //TODO pozbyc sie ! oraz image zawsze powinien byc dostepny
+        let photo = self.photosOfNote[indexPath.row].img
+        if let image = UIImage(data: photo) {
+            photoViewController.setImage(image: image)
         }
         present(navigationVC, animated: true)
     }

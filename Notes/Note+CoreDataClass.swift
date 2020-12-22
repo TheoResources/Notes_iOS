@@ -2,7 +2,7 @@
 //  Note+CoreDataClass.swift
 //  Notes
 //
-//  Created by Michal Matlosz on 18/12/2020.
+//  Created by Michal Matlosz on 22/12/2020.
 //
 //
 

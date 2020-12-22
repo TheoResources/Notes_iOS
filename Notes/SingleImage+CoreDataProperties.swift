@@ -16,7 +16,7 @@ extension SingleImage {
         return NSFetchRequest<SingleImage>(entityName: "SingleImage")
     }
 
-    @NSManaged public var img: Data?
+    @NSManaged public var img: Data
     @NSManaged public var ofNote: Note?
 
 }
