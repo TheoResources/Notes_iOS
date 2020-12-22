@@ -142,6 +142,10 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
         let singleImage = SingleImage(context: context)
         singleImage.img = image.jpegData(compressionQuality: 1.0)
         self.note.addToImg(singleImage)
+        do {
+            try self.context.save()
+        } catch {
+        }
         self.fetchPhotos()
         picker.dismiss(animated: true, completion: nil)
     }

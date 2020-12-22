@@ -5,6 +5,7 @@
 //  Created by Michal Matlosz on 07/12/2020.
 //
 
+
 import UIKit
 import CoreData
 
@@ -51,7 +52,7 @@ class NotesViewController: UIViewController {
             let request = Note.fetchRequest() as NSFetchRequest<Note>
             
             if (withPhotosFilterIsEnabled) {
-                let pred = NSPredicate(format: "photos !=nil AND photos.@count > 0")
+                let pred = NSPredicate(format: "ANY img != nil")
                 request.predicate = pred
             }
             
