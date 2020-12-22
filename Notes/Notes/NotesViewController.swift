@@ -4,18 +4,13 @@
 //
 //  Created by Michal Matlosz on 07/12/2020.
 //
-/*
- Aplikacja z notatkami
- 
- TODO:
- - tagi notatki,
- - sortowanie po tagach
- 
- */
 
 import UIKit
+import CoreData
 
 class NotesViewController: UIViewController {
+    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     static let sectionName = "Notes"
     static let cellHeight: CGFloat = 50
@@ -26,22 +21,57 @@ class NotesViewController: UIViewController {
     let blackUpPointingTriangleUnicodeCharacter = "\u{25B2}"
     let filterByPhotosOffTitle = "With photos \u{25CB}"
     let filterByPhotosOnTitle = "With photos \u{25CF}"
-
+    
     var notesTableView: UITableView = UITableView()
     var sortByEditedDateButton: UIButton = UIButton()
     var sortByTextButton: UIButton = UIButton()
     var filterByPhotosButton: UIButton = UIButton()
     
     var sortedByEditedDate: Bool = true
-    var sortedByText: Bool = false
+    var sortedByText: Bool? = nil
+    
+    var withPhotosFilterIsEnabled: Bool = false
+    
+    var notes: [Note]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(openAddNote))
         
         setupViews()
         setConstraints()
+        
+        fetchNotes()
+        self.sortedByEditedDate = false
+    }
+    
+    func fetchNotes() {
+        do {
+            let request = Note.fetchRequest() as NSFetchRequest<Note>
+            
+            if (withPhotosFilterIsEnabled) {
+                let pred = NSPredicate(format: "photos !=nil AND photos.@count > 0")
+                request.predicate = pred
+            }
+            
+            let sortByDate = NSSortDescriptor(key: "lastEditedTimeStamp", ascending: sortedByEditedDate)
+            request.sortDescriptors = [sortByDate]
+            
+            if let sortedByText = sortedByText {
+                let sortByTxt = NSSortDescriptor(key: "text", ascending: sortedByText)
+                request.sortDescriptors = [sortByTxt, sortByDate]
+            }
+            
+            self.notes = try context.fetch(request)
+            
+            DispatchQueue.main.async {
+                self.notesTableView.reloadData()
+            }
+        }
+        catch {
+            
+        }
     }
     
     func setupViews() {
@@ -85,36 +115,36 @@ class NotesViewController: UIViewController {
     @objc func filterByPhotosTap(_ sender: UIButton) {
         sender.isSelected.toggle()
         if (sender.isSelected) {
-            NotesStorage.filterByPhotos(withPhotos: true)
-            notesTableView.reloadData()
+            withPhotosFilterIsEnabled = true
+            fetchNotes()
         } else {
-            NotesStorage.filterByPhotos(withPhotos: false)
-            notesTableView.reloadData()
+            withPhotosFilterIsEnabled = false
+            fetchNotes()
         }
     }
     
     @objc func sortByTextTap() {
+        let sorted = sortedByText ?? true
         sortByEditedDateButton.setTitleColor(sortTextColorDeselected, for: .normal)
         sortByTextButton.setTitleColor(NotesViewController.sortTextColorSelected, for: .normal)
-        NotesStorage.sortByText(sortedUp: sortedByText)
-        sortByTextButton.setTitle(getSortLabelText(labelSortName: "Text", isUp: sortedByText), for: .normal)
-        sortedByText = !sortedByText
-        notesTableView.reloadData()
+        sortByTextButton.setTitle(getSortLabelText(labelSortName: "Text", isUp: sorted), for: .normal)
+        fetchNotes()
+        sortedByText = !sorted
     }
     
-    
     @objc func sortByEditedDateTap() {
+        sortedByText = nil
         sortByEditedDateButton.setTitleColor(NotesViewController.sortTextColorSelected, for: .normal)
         sortByTextButton.setTitleColor(sortTextColorDeselected, for: .normal)
-        NotesStorage.sortByEditDate(sortedUp: sortedByEditedDate)
         sortByEditedDateButton.setTitle(getSortLabelText(labelSortName: "Date", isUp: sortedByEditedDate), for: .normal)
+        fetchNotes()
         sortedByEditedDate = !sortedByEditedDate
-        notesTableView.reloadData()
     }
     
     @IBAction func openAddNote(_ sender: UIBarButtonItem) {
         let newNote = NewNoteViewController()
         newNote.delegate = self
+        newNote.configure(note: Note(context: self.context))
         let navigationVC = UINavigationController(rootViewController: newNote)
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)
@@ -157,12 +187,13 @@ class NotesViewController: UIViewController {
 
 extension NotesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return NotesStorage.getNumberOfNotes()
+        return notes?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "noteCellId", for: indexPath) as! NoteTableViewCell
-        cell.configure(for: NotesStorage.getNoteByIndex(index: indexPath.row))
+        let note = self.notes![indexPath.row]
+        cell.configure(for: note)
         cell.selectionStyle = .none
         cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         return cell
@@ -192,8 +223,15 @@ extension NotesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
     -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
-            NotesStorage.removeNoteByIndex(index: indexPath.row)
-            self.notesTableView.reloadData()
+            let noteToRemove = self.notes![indexPath.row]
+            self.context.delete(noteToRemove)
+            do {
+                try self.context.save()
+            }
+            catch {
+                
+            }
+            self.fetchNotes()
             completionHandler(true)
         }
         deleteAction.image = UIImage(systemName: "trash")
@@ -204,7 +242,9 @@ extension NotesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let newNote = NewNoteViewController()
-        newNote.configure(index: indexPath.row, note: NotesStorage.getNoteByIndex(index: indexPath.row))
+        newNote.delegate = self
+        let noteToEdit = self.notes![indexPath.row]
+        newNote.configure(note: noteToEdit)
         let navigationVC = UINavigationController(rootViewController: newNote)
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)
@@ -213,6 +253,6 @@ extension NotesViewController: UITableViewDelegate {
 
 extension NotesViewController: NewNoteDelegate {
     func didAddNewNote() {
-        notesTableView.reloadData()
+        fetchNotes()
     }
 }

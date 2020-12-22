@@ -7,19 +7,24 @@
 
 import Foundation
 import UIKit
+import CoreData
 
 protocol NewNoteDelegate: class {
     func didAddNewNote()
 }
 
 class NewNoteViewController: UIViewController {
-    var note: Note = Note()
+    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+
+    var note: Note!
+    
+    var photosOfNote: [SingleImage] = []
     
     var textNote: UITextView = UITextView()
     var imageView: UIImageView?
     var addImageButton: UIButton = UIButton()
     var imagesTableView: UITableView = UITableView()
-    var indexOfSelectedNote: Int? = nil
     
     weak var delegate: NewNoteDelegate?
     
@@ -32,16 +37,16 @@ class NewNoteViewController: UIViewController {
 
         setupViews()
         setConstraints()
+        fetchPhotos()
     }
     
-    func configure(index: Int, note: Note) {
+    func configure(note: Note) {
         self.note = note
-        self.indexOfSelectedNote = index
     }
     
     func setupViews() {
         textNote.translatesAutoresizingMaskIntoConstraints = false
-        textNote.text = note.text
+        textNote.text = note?.text ?? ""
         textNote.font = UIFont.systemFont(ofSize: 16)
         view.addSubview(textNote)
         
@@ -59,20 +64,36 @@ class NewNoteViewController: UIViewController {
         view.addSubview(imagesTableView)
     }
     
+    private func fetchPhotos() {
+        do {
+            let request = SingleImage.fetchRequest() as NSFetchRequest<SingleImage>
+            let predicate = NSPredicate(format: "ANY ofNote == %@", self.note)
+            request.predicate = predicate
+            self.photosOfNote = try context.fetch(request)
+            DispatchQueue.main.async {
+                self.imagesTableView.reloadData()
+            }
+        }
+        catch {
+        }
+    }
+    
     @objc func cancelNewNoteTap() {
         dismiss(animated: true, completion: nil)
     }
     
     @objc func saveNewNoteTap() {
-        note.lastEditedTimeStamp = Date().timeIntervalSince1970
-        note.text = textNote.text
-        if let index = indexOfSelectedNote {
-            NotesStorage.updateNoteAtIndex(index: index, note: note)
-        } else {
-            NotesStorage.addNote(note: note)
+        if let editedOrNewNote = self.note {
+            editedOrNewNote.lastEditedTimeStamp = Date().timeIntervalSince1970
+            editedOrNewNote.text = textNote.text
+            do {
+                try self.context.save()
+            }
+            catch {
+                
+            }
+            delegate?.didAddNewNote()
         }
-    
-        delegate?.didAddNewNote()
         
         dismiss(animated: true, completion: nil)
     }
@@ -117,20 +138,27 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
         guard let image = info[.originalImage] as? UIImage else {
             return
         }
-        self.note.photos.append(image)
-        imagesTableView.reloadData()
+        
+        let singleImage = SingleImage(context: context)
+        singleImage.img = image.jpegData(compressionQuality: 1.0)
+        self.note.addToImg(singleImage)
+        self.fetchPhotos()
         picker.dismiss(animated: true, completion: nil)
     }
 }
 
 extension NewNoteViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.note.photos.count
+        return self.photosOfNote.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "photoCellId", for: indexPath) as! NoteImageTableViewCell
-        cell.configure(for: self.note.photos[indexPath.row])
+        
+        if let img = self.photosOfNote[indexPath.row].img {
+            cell.configure(for: UIImage(data: img)!) //TODO pozbyc sie !
+        }
+        
         cell.selectionStyle = .none
         cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         return cell
@@ -143,7 +171,9 @@ extension NewNoteViewController: UITableViewDelegate {
         let photoViewController = PhotoViewController()
         let navigationVC = UINavigationController(rootViewController: photoViewController)
         navigationVC.modalPresentationStyle = .fullScreen
-        photoViewController.setImage(image: note.photos[indexPath.row])
+        if let img = self.photosOfNote[indexPath.row].img {
+            photoViewController.setImage(image: UIImage(data: img)!) //TODO pozbyc sie ! oraz image zawsze powinien byc dostepny
+        }
         present(navigationVC, animated: true)
     }
 
@@ -154,9 +184,13 @@ extension NewNoteViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
     -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
-            self.note.removePhotoByIndex(index: indexPath.row)
-            
-            self.imagesTableView.reloadData()
+            let imageToRemove = self.photosOfNote[indexPath.row]
+            self.context.delete(imageToRemove)
+            do {
+                try self.context.save()
+            } catch {
+            }
+            self.fetchPhotos()
             completionHandler(true)
         }
         deleteAction.image = UIImage(systemName: "trash")

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17511" systemVersion="19H15" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Note" representedClassName="Note" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="lastEditedTimeStamp" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="img" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SingleImage" inverseName="ofNote" inverseEntity="SingleImage"/>
+    </entity>
+    <entity name="SingleImage" representedClassName="SingleImage" syncable="YES">
+        <attribute name="img" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <relationship name="ofNote" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Note" inverseName="img" inverseEntity="Note"/>
+    </entity>
+    <elements>
+        <element name="Note" positionX="-63" positionY="-18" width="128" height="103"/>
+        <element name="SingleImage" positionX="-63" positionY="9" width="128" height="73"/>
+    </elements>
+</model>
