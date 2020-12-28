@@ -2,7 +2,7 @@
 //  Note+CoreDataProperties.swift
 //  Notes
 //
-//  Created by Michal Matlosz on 22/12/2020.
+//  Created by Michal Matlosz on 28/12/2020.
 //
 //
 
@@ -22,9 +22,9 @@ extension Note {
     @NSManaged public var img: NSSet?
     
     public var imgArray: [SingleImage] {
-        let set = img as? Set<SingleImage> ?? []
-        return Array(set)
-    }
+         let set = img as? Set<SingleImage> ?? []
+         return Array(set)
+     }
 
 }
 

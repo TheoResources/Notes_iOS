@@ -45,6 +45,8 @@ class NotesViewController: UIViewController {
         
         fetchNotes()
         self.sortedByEditedDate = false
+        
+        print(NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).last!)
     }
     
     func fetchNotes() {

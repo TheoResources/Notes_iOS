@@ -2,7 +2,7 @@
 //  SingleImage+CoreDataProperties.swift
 //  Notes
 //
-//  Created by Michal Matlosz on 22/12/2020.
+//  Created by Michal Matlosz on 28/12/2020.
 //
 //
 
@@ -16,7 +16,8 @@ extension SingleImage {
         return NSFetchRequest<SingleImage>(entityName: "SingleImage")
     }
 
-    @NSManaged public var img: Data
+    @NSManaged public var photo: Data?
+    @NSManaged public var thumbnail: Data?
     @NSManaged public var ofNote: Note?
 
 }

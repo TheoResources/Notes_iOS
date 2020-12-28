@@ -3,7 +3,7 @@
 //  Notes
 //
 //  Created by Michal Matlosz on 07/12/2020.
-//
+// 
 
 import Foundation
 import UIKit
@@ -140,12 +140,20 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
         guard let image = info[.originalImage] as? UIImage else {
             return
         }
-        
+
+        let size = CGSize(width: 60 * image.size.width  / image.size.height, height: 60.0)
+        let scaledImage = image.af.imageScaled(to: size)
+                
         let singleImage = SingleImage(context: context)
+        
         if let image = image.jpegData(compressionQuality: 1.0) {
-            singleImage.img = image
-            self.note.addToImg(singleImage)
+            singleImage.photo = image
         }
+        
+        singleImage.thumbnail = scaledImage.pngData()
+
+        self.note.addToImg(singleImage)
+    
         do {
             try self.context.save()
         } catch {
@@ -162,8 +170,8 @@ extension NewNoteViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "photoCellId", for: indexPath) as! NoteImageTableViewCell
-        let photo = self.photosOfNote[indexPath.row].img
-        if let image = UIImage(data: photo) {
+        let photo = self.photosOfNote[indexPath.row].thumbnail
+        if let image = UIImage(data: photo!) {
             cell.configure(for: image)
         }
         
@@ -179,8 +187,8 @@ extension NewNoteViewController: UITableViewDelegate {
         let photoViewController = PhotoViewController()
         let navigationVC = UINavigationController(rootViewController: photoViewController)
         navigationVC.modalPresentationStyle = .fullScreen
-        let photo = self.photosOfNote[indexPath.row].img
-        if let image = UIImage(data: photo) {
+        let photo = self.photosOfNote[indexPath.row].photo
+        if let image = UIImage(data: photo!) {
             photoViewController.setImage(image: image)
         }
         present(navigationVC, animated: true)

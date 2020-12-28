@@ -7,11 +7,12 @@
         <relationship name="img" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SingleImage" inverseName="ofNote" inverseEntity="SingleImage"/>
     </entity>
     <entity name="SingleImage" representedClassName="SingleImage" syncable="YES">
-        <attribute name="img" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="photo" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="thumbnail" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <relationship name="ofNote" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Note" inverseName="img" inverseEntity="Note"/>
     </entity>
     <elements>
         <element name="Note" positionX="-63" positionY="-18" width="128" height="103"/>
-        <element name="SingleImage" positionX="-63" positionY="9" width="128" height="73"/>
+        <element name="SingleImage" positionX="-63" positionY="9" width="128" height="88"/>
     </elements>
 </model>
