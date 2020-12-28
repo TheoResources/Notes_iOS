@@ -45,8 +45,6 @@ class NotesViewController: UIViewController {
         
         fetchNotes()
         self.sortedByEditedDate = false
-        
-        print(NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).last!)
     }
     
     func fetchNotes() {
@@ -147,7 +145,7 @@ class NotesViewController: UIViewController {
     @IBAction func openAddNote(_ sender: UIBarButtonItem) {
         let newNote = NewNoteViewController()
         newNote.delegate = self
-        newNote.configure(note: Note(context: self.context))
+        newNote.configure(note: Note(context: self.context), isNew: true)
         let navigationVC = UINavigationController(rootViewController: newNote)
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)
@@ -247,7 +245,7 @@ extension NotesViewController: UITableViewDelegate {
         let newNote = NewNoteViewController()
         newNote.delegate = self
         let noteToEdit = self.notes![indexPath.row]
-        newNote.configure(note: noteToEdit)
+        newNote.configure(note: noteToEdit, isNew: false)
         let navigationVC = UINavigationController(rootViewController: newNote)
         navigationVC.modalPresentationStyle = .fullScreen
         present(navigationVC, animated: true)

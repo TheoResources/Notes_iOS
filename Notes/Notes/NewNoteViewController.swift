@@ -27,6 +27,7 @@ class NewNoteViewController: UIViewController {
     var imageView: UIImageView?
     var addImageButton: UIButton = UIButton()
     var imagesTableView: UITableView = UITableView()
+    var isNew : Bool = false
     
     weak var delegate: NewNoteDelegate?
     
@@ -42,7 +43,8 @@ class NewNoteViewController: UIViewController {
         fetchPhotos()
     }
     
-    func configure(note: Note) {
+    func configure(note: Note, isNew: Bool) {
+        self.isNew = isNew
         self.note = note
     }
     
@@ -81,6 +83,16 @@ class NewNoteViewController: UIViewController {
     }
     
     @objc func cancelNewNoteTap() {
+        if (isNew) {
+    
+            self.context.delete(self.note)
+            do {
+                try self.context.save()
+            }
+            catch {
+                
+            }
+        }
         dismiss(animated: true, completion: nil)
     }
     
