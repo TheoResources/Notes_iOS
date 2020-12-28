@@ -192,6 +192,12 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
 
 extension NewNoteViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if self.photosOfNote.count == 0 {
+            tableView.setEmptyView(title: "You don't have any photos of note.", message: "Your photos will be in here.")
+        } else {
+            tableView.restore()
+        }
+        
         return self.photosOfNote.count
     }
     

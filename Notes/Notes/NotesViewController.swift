@@ -188,7 +188,14 @@ class NotesViewController: UIViewController {
 
 extension NotesViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return notes?.count ?? 0
+        let numberOfNotes = notes?.count ?? 0
+        if numberOfNotes == 0 {
+            tableView.setEmptyView(title: "You don't have any notes.", message: "Your notes will be in here.")
+        } else {
+            tableView.restore()
+        }
+        
+        return numberOfNotes
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -256,4 +263,46 @@ extension NotesViewController: NewNoteDelegate {
     func didAddNewNote() {
         fetchNotes()
     }
+}
+
+extension UITableView {
+    
+    func setEmptyView(title: String, message: String) {
+        let emptyView = UIView(frame: CGRect(x: self.center.x, y: self.center.y, width: self.bounds.size.width, height: self.bounds.size.height))
+        let titleLabel = UILabel()
+        let messageLabel = UILabel()
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.textColor = UIColor.black
+        titleLabel.font = UIFont(name: "HelveticaNeue-Bold", size: 18)
+        messageLabel.textColor = UIColor.lightGray
+        messageLabel.font = UIFont(name: "HelveticaNeue-Regular", size: 17)
+
+        emptyView.addSubview(titleLabel)
+        NSLayoutConstraint.activate([
+            titleLabel.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor),
+            titleLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor)
+        ])
+
+        emptyView.addSubview(messageLabel)
+        
+        NSLayoutConstraint.activate([
+            messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            messageLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor)
+        ])
+
+        titleLabel.text = title
+        messageLabel.text = message
+        messageLabel.numberOfLines = 0
+        messageLabel.textAlignment = .center
+        
+        self.backgroundView = emptyView
+        self.separatorStyle = .none
+    }
+    
+    func restore() {
+        self.backgroundView = nil
+        self.separatorStyle = .singleLine
+    }
+    
 }
