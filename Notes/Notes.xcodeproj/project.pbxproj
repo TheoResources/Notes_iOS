@@ -16,6 +16,7 @@
 		6D187686257ECF93004397C7 /* NewNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D187685257ECF93004397C7 /* NewNoteViewController.swift */; };
 		6D18768C258200C7004397C7 /* NoteImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D18768B258200C7004397C7 /* NoteImageTableViewCell.swift */; };
 		6D18769D25837C10004397C7 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D18769C25837C10004397C7 /* PhotoViewController.swift */; };
+		6D75D9C82599F516009B46E2 /* SpinnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D75D9C72599F516009B46E2 /* SpinnerViewController.swift */; };
 		6DB7D158258A4DB400CEA6A1 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6DB7D156258A4DB400CEA6A1 /* Model.xcdatamodeld */; };
 		6DFE694D25920E9300D8645E /* Note+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DFE694925920E9300D8645E /* Note+CoreDataClass.swift */; };
 		6DFE694E25920E9300D8645E /* Note+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DFE694A25920E9300D8645E /* Note+CoreDataProperties.swift */; };
@@ -36,6 +37,7 @@
 		6D187685257ECF93004397C7 /* NewNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteViewController.swift; sourceTree = "<group>"; };
 		6D18768B258200C7004397C7 /* NoteImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteImageTableViewCell.swift; sourceTree = "<group>"; };
 		6D18769C25837C10004397C7 /* PhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewController.swift; sourceTree = "<group>"; };
+		6D75D9C72599F516009B46E2 /* SpinnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerViewController.swift; sourceTree = "<group>"; };
 		6DB7D157258A4DB400CEA6A1 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		6DFE694925920E9300D8645E /* Note+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		6DFE694A25920E9300D8645E /* Note+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
@@ -86,6 +88,7 @@
 				6D18768B258200C7004397C7 /* NoteImageTableViewCell.swift */,
 				6D18769C25837C10004397C7 /* PhotoViewController.swift */,
 				6DB7D156258A4DB400CEA6A1 /* Model.xcdatamodeld */,
+				6D75D9C72599F516009B46E2 /* SpinnerViewController.swift */,
 			);
 			path = Notes;
 			sourceTree = "<group>";
@@ -179,6 +182,7 @@
 				6D18766E257E0760004397C7 /* NotesViewController.swift in Sources */,
 				6D18766A257E0760004397C7 /* AppDelegate.swift in Sources */,
 				6D18768C258200C7004397C7 /* NoteImageTableViewCell.swift in Sources */,
+				6D75D9C82599F516009B46E2 /* SpinnerViewController.swift in Sources */,
 				6DFE695025920E9300D8645E /* SingleImage+CoreDataProperties.swift in Sources */,
 				6D18766C257E0760004397C7 /* SceneDelegate.swift in Sources */,
 				6D18769D25837C10004397C7 /* PhotoViewController.swift in Sources */,
@@ -327,6 +331,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8RTSV3S792;
 				INFOPLIST_FILE = Notes/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -345,6 +350,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8RTSV3S792;
 				INFOPLIST_FILE = Notes/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

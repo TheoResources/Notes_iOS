@@ -18,7 +18,7 @@ protocol NewNoteDelegate: class {
 class NewNoteViewController: UIViewController {
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
+    
     var note: Note!
     
     var photosOfNote: [SingleImage] = []
@@ -37,7 +37,7 @@ class NewNoteViewController: UIViewController {
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelNewNoteTap))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveNewNoteTap))
-
+        
         setupViews()
         setConstraints()
         fetchPhotos()
@@ -84,7 +84,7 @@ class NewNoteViewController: UIViewController {
     
     @objc func cancelNewNoteTap() {
         if (isNew) {
-    
+            
             self.context.delete(self.note)
             do {
                 try self.context.save()
@@ -149,28 +149,43 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let image = info[.originalImage] as? UIImage else {
-            return
-        }
-
-        let size = CGSize(width: 60 * image.size.width  / image.size.height, height: 60.0)
-        let scaledImage = image.af.imageScaled(to: size)
-                
-        let singleImage = SingleImage(context: context)
+        let child = SpinnerViewController()
+        addChild(child)
+        child.view.frame = view.frame
+        view.addSubview(child.view)
+        child.didMove(toParent: self)
         
-        if let image = image.jpegData(compressionQuality: 1.0) {
-            singleImage.photo = image
+        let background = DispatchQueue.global()
+        background.async {
+            
+            let singleImage = SingleImage(context: self.context)
+            guard let image = info[.originalImage] as? UIImage else {
+                return
+            }
+            
+            let size = CGSize(width: 60 * image.size.width  / image.size.height, height: 60.0)
+            let scaledImage = image.af.imageScaled(to: size)
+            
+            if let image = image.jpegData(compressionQuality: 1.0) {
+                singleImage.photo = image
+            }
+            
+            singleImage.thumbnail = scaledImage.pngData()
+            self.note.addToImg(singleImage)
+            
+            do {
+                try self.context.save()
+            } catch {
+            }
+            
+            self.fetchPhotos()
+            DispatchQueue.main.async() {
+                child.willMove(toParent: nil)
+                child.view.removeFromSuperview()
+                child.removeFromParent()
+            }
         }
         
-        singleImage.thumbnail = scaledImage.pngData()
-
-        self.note.addToImg(singleImage)
-    
-        do {
-            try self.context.save()
-        } catch {
-        }
-        self.fetchPhotos()
         picker.dismiss(animated: true, completion: nil)
     }
 }
@@ -179,7 +194,7 @@ extension NewNoteViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.photosOfNote.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "photoCellId", for: indexPath) as! NoteImageTableViewCell
         let photo = self.photosOfNote[indexPath.row].thumbnail
@@ -205,7 +220,7 @@ extension NewNoteViewController: UITableViewDelegate {
         }
         present(navigationVC, animated: true)
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
