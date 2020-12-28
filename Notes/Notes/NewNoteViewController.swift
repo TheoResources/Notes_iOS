@@ -17,6 +17,8 @@ protocol NewNoteDelegate: class {
 
 class NewNoteViewController: UIViewController {
     
+    let heightOfPhoto: CGFloat = 100.0
+    let heigthOfPhotoCell: CGFloat = 120.0
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     var note: Note!
@@ -163,7 +165,7 @@ extension NewNoteViewController: UIImagePickerControllerDelegate, UINavigationCo
                 return
             }
             
-            let size = CGSize(width: 60 * image.size.width  / image.size.height, height: 60.0)
+            let size = CGSize(width: self.heightOfPhoto * image.size.width  / image.size.height, height: self.heightOfPhoto)
             let scaledImage = image.af.imageScaled(to: size)
             
             if let image = image.jpegData(compressionQuality: 1.0) {
@@ -228,7 +230,7 @@ extension NewNoteViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return self.heigthOfPhotoCell
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)

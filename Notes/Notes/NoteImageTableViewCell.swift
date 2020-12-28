@@ -30,10 +30,10 @@ class NoteImageTableViewCell: UITableViewCell {
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             photoView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            photoView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            photoView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
             photoView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            photoView.heightAnchor.constraint(equalToConstant: 60),
-            photoView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            photoView.heightAnchor.constraint(equalToConstant: 100.0),
+            photoView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0)
         ])
     }
     
