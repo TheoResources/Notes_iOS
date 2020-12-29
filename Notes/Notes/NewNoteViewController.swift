@@ -40,9 +40,15 @@ class NewNoteViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelNewNoteTap))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveNewNoteTap))
         
+        NotificationCenter.default.addObserver(self, selector: #selector(onTerminate), name: UIScene.didDisconnectNotification, object: nil)
+        
         setupViews()
         setConstraints()
         fetchPhotos()
+    }
+    
+    @objc func onTerminate() {
+        removeNotSavedNote()
     }
     
     func configure(note: Note, isNew: Bool) {
@@ -54,6 +60,7 @@ class NewNoteViewController: UIViewController {
         textNote.translatesAutoresizingMaskIntoConstraints = false
         textNote.text = note?.text ?? ""
         textNote.font = UIFont.systemFont(ofSize: 16)
+        textNote.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         view.addSubview(textNote)
         
         addImageButton.setTitle("Add photo", for: .normal)
@@ -85,8 +92,12 @@ class NewNoteViewController: UIViewController {
     }
     
     @objc func cancelNewNoteTap() {
+        removeNotSavedNote()
+        dismiss(animated: true, completion: nil)
+    }
+    
+    private func removeNotSavedNote() {
         if (isNew) {
-            
             self.context.delete(self.note)
             do {
                 try self.context.save()
@@ -95,7 +106,6 @@ class NewNoteViewController: UIViewController {
                 
             }
         }
-        dismiss(animated: true, completion: nil)
     }
     
     @objc func saveNewNoteTap() {
