@@ -35,7 +35,7 @@ class NewNoteViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = NotesViewController.sortTextColorSelected
+        view.backgroundColor = .white
         
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelNewNoteTap))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveNewNoteTap))
@@ -60,11 +60,20 @@ class NewNoteViewController: UIViewController {
         textNote.translatesAutoresizingMaskIntoConstraints = false
         textNote.text = note?.text ?? ""
         textNote.font = UIFont.systemFont(ofSize: 16)
-        textNote.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        textNote.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        
+        textNote.layer.borderColor = NotesViewController.sortTextColorSelected.cgColor
+
+        textNote.layer.borderWidth = 1.0;
+        textNote.layer.cornerRadius = 5.0;
+        
         view.addSubview(textNote)
         
         addImageButton.setTitle("Add photo", for: .normal)
         addImageButton.translatesAutoresizingMaskIntoConstraints = false
+        addImageButton.setTitleColor(NotesViewController.sortTextColorSelected, for: .normal)
+        addImageButton.setImage(UIImage(systemName: "camera"), for: .normal)
+        addImageButton.imageEdgeInsets.left = -20
         addImageButton.addTarget(self, action: #selector(addPhotoTap), for: .touchUpInside)
         view.addSubview(addImageButton)
         
@@ -133,9 +142,9 @@ class NewNoteViewController: UIViewController {
     
     func setConstraints() {
         NSLayoutConstraint.activate([
-            textNote.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            textNote.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            textNote.heightAnchor.constraint(equalToConstant: 100),
+            textNote.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
+            textNote.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            textNote.heightAnchor.constraint(equalToConstant: 150),
             textNote.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
         ])
         

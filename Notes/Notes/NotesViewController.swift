@@ -44,17 +44,11 @@ class NotesViewController: UIViewController {
         setConstraints()
         
         fetchNotes()
-        self.sortedByEditedDate = false
     }
     
     func fetchNotes() {
         do {
             let request = Note.fetchRequest() as NSFetchRequest<Note>
-            
-            if (withPhotosFilterIsEnabled) {
-                let pred = NSPredicate(format: "ANY img != nil")
-                request.predicate = pred
-            }
             
             let sortByDate = NSSortDescriptor(key: "lastEditedTimeStamp", ascending: sortedByEditedDate)
             request.sortDescriptors = [sortByDate]
@@ -62,6 +56,11 @@ class NotesViewController: UIViewController {
             if let sortedByText = sortedByText {
                 let sortByTxt = NSSortDescriptor(key: "text", ascending: sortedByText)
                 request.sortDescriptors = [sortByTxt, sortByDate]
+            }
+            
+            if (withPhotosFilterIsEnabled) {
+                let pred = NSPredicate(format: "ANY img != nil")
+                request.predicate = pred
             }
             
             self.notes = try context.fetch(request)
@@ -126,20 +125,23 @@ class NotesViewController: UIViewController {
     
     @objc func sortByTextTap() {
         let sorted = sortedByText ?? true
+        sortedByText = !sorted
+        fetchNotes()
+
         sortByEditedDateButton.setTitleColor(sortTextColorDeselected, for: .normal)
         sortByTextButton.setTitleColor(NotesViewController.sortTextColorSelected, for: .normal)
         sortByTextButton.setTitle(getSortLabelText(labelSortName: "Text", isUp: sorted), for: .normal)
-        fetchNotes()
-        sortedByText = !sorted
     }
     
     @objc func sortByEditedDateTap() {
         sortedByText = nil
+        sortedByEditedDate = !sortedByEditedDate
+        fetchNotes()
+
         sortByEditedDateButton.setTitleColor(NotesViewController.sortTextColorSelected, for: .normal)
         sortByTextButton.setTitleColor(sortTextColorDeselected, for: .normal)
-        sortByEditedDateButton.setTitle(getSortLabelText(labelSortName: "Date", isUp: sortedByEditedDate), for: .normal)
-        fetchNotes()
-        sortedByEditedDate = !sortedByEditedDate
+        sortByEditedDateButton.setTitle(getSortLabelText(labelSortName: "Date", isUp: !sortedByEditedDate), for: .normal)
+        
     }
     
     @IBAction func openAddNote(_ sender: UIBarButtonItem) {
